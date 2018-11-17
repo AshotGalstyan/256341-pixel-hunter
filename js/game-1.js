@@ -77,10 +77,10 @@ controls.forEach((control) => {
   });
 });
 
-const selectionTest = function() {
-  if ( element.querySelectorAll(`input[type="radio"]:checked`).length == 2 ) {
+const selectionTest = () => {
+  if (element.querySelectorAll(`input[type="radio"]:checked`).length === 2) {
     changeScreen(game2Screen);
   }
-}
+};
 
 export default element;

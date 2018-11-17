@@ -1,3 +1,5 @@
+import {render} from './utilites.js';
+
 const template = `
 <section class="modal">
   <form class="modal__inner">

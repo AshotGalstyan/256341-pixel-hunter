@@ -1,3 +1,5 @@
+import {render} from './utilites.js';
+
 const template = `
 <section class="modal">
   <div class="modal__inner">

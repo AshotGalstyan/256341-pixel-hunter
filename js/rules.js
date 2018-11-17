@@ -49,7 +49,7 @@ nextButton.addEventListener(`click`, () => {
 const name = element.querySelector(`.rules__input`);
 
 name.addEventListener(`keyup`, () => {
-  if (name.value != "") {
+  if (name.value !== ``) {
     nextButton.disabled = false;
   } else {
     nextButton.disabled = true;
