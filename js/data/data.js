@@ -15,18 +15,11 @@ const LIVES_TO_POINT = 50;
 
 export const getScore = (answers = [], lives) => {
 
-  let score = -1;
-
   if (!Array.isArray(answers) || answers.length !== TESTS_COUNT || typeof lives !== `number` || lives < MIN_LIVES || lives > MAX_LIVES) {
-    return score;
+    return -1;
   }
 
-  score = answers.reduce((acc, answer) => acc + ANSWER_TO_POINT_MAP[answer], 0);
-
-  score += LIVES_TO_POINT * lives;
-
-  return score;
-
+  return answers.reduce((acc, answer) => acc + ANSWER_TO_POINT_MAP[answer], 0) + LIVES_TO_POINT * lives;
 };
 
 export const reduceLives = (lives) => {
@@ -35,7 +28,7 @@ export const reduceLives = (lives) => {
     return -1;
   }
 
-  return --lives;
+  return lives - 1;
 
 };
 
