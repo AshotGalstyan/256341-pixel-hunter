@@ -24,7 +24,7 @@ export const getScore = (answers = [], lives) => {
 
 export const reduceLives = (lives) => {
 
-  if (lives <= MIN_LIVES || lives > MAX_LIVES) {
+  if (typeof lives !== `number` || lives <= MIN_LIVES || lives > MAX_LIVES) {
     return -1;
   }
 
@@ -33,18 +33,19 @@ export const reduceLives = (lives) => {
 };
 
 export const changeLevel = (game, level) => {
-  if (level < 0 || level > MAX_LEVELS) {
-    return -1;
-  }
 
   const newGame = Object.assign({}, game, {
     level
   });
 
-  return newGame.level;
+  if (typeof level !== `number` || level < 0 || level > MAX_LEVELS || level === Infinity || level === -Infinity) {
+    newGame.level = -1;
+  }
+
+  return newGame;
 };
 
-export const timeControl = (game) => {
+export const changeTime = (game) => {
 
   const newGame = Object.assign({}, game, {currentStepTime: game.currentStepTime--});
 
