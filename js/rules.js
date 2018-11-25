@@ -2,7 +2,6 @@ import {changeScreen, render} from './utilites.js';
 import {showIntro} from './intro.js';
 import logo from './logo.js';
 import {showGame} from './game.js';
-import {showStats} from './stats.js';
 
 const template = `
 <header class="header">` + logo + `</header>
