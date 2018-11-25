@@ -1,19 +1,11 @@
 import {changeScreen, render} from './utilites.js';
-import introScreen from './main.js';
-import game1Screen from './game-1.js';
+import {showIntro} from './intro.js';
+import logo from './logo.js';
+import {showGame} from './game.js';
+import {showStats} from './stats.js';
 
 const template = `
-<header class="header">
-  <button class="back">
-    <span class="visually-hidden">Вернуться к началу</span>
-    <svg class="icon" width="45" height="45" viewBox="0 0 45 45" fill="#000000">
-      <use xlink:href="img/sprite.svg#arrow-left"></use>
-    </svg>
-    <svg class="icon" width="101" height="44" viewBox="0 0 101 44" fill="#000000">
-      <use xlink:href="img/sprite.svg#logo-small"></use>
-    </svg>
-  </button>
-</header>
+<header class="header">` + logo + `</header>
 <section class="rules">
   <h2 class="rules__title">Правила</h2>
   <ul class="rules__description">
@@ -26,7 +18,7 @@ const template = `
   </ul>
   <p class="rules__ready">Готовы?</p>
   <form class="rules__form">
-    <input class="rules__input" type="text" placeholder="Ваше Имя">
+    <input class="rules__input" type="text" placeholder="Ваше Имя" value="">
     <button class="rules__button  continue" type="submit" disabled>Go!</button>
   </form>
 </section>
@@ -37,23 +29,28 @@ const element = render(template);
 const backButton = element.querySelector(`.back`);
 
 backButton.addEventListener(`click`, () => {
-  changeScreen(introScreen);
-});
-
-const nextButton = element.querySelector(`.rules__button`);
-
-nextButton.addEventListener(`click`, () => {
-  changeScreen(game1Screen);
+  showIntro();
 });
 
 const name = element.querySelector(`.rules__input`);
 
 name.addEventListener(`keyup`, () => {
-  if (name.value !== ``) {
+
+  if (name.value.trim() !== ``) {
     nextButton.disabled = false;
   } else {
+    name.value = ``;
     nextButton.disabled = true;
   }
 });
 
-export default element;
+const nextButton = element.querySelector(`.rules__button`);
+
+nextButton.addEventListener(`click`, () => {
+  name.value = name.value.trim();
+  showGame();
+});
+
+export const showRules = () => {
+  changeScreen(element);
+};

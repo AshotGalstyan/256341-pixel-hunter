@@ -1,30 +1,30 @@
-const TESTS_COUNT = 10;
-const MAX_LEVELS = 4;
-const MIN_LIVES = 0;
-const MAX_LIVES = 2;
+const MAX_LIVES_REMAINING = 2;
 const MAX_TIME_LIMIT = 30;
 const FAST_LIMIT = 10;
 const SLOW_LIMIT = 20;
-const ANSWER_TO_POINT_MAP = {
-  normal: 100,
+
+
+export const LIVES_TO_POINT = 50;
+
+export const ANSWER_TO_POINT_MAP = {
+  correct: 100,
   fast: 150,
   slow: 50,
-  incorrect: 0
+  wrong: 0
 };
-const LIVES_TO_POINT = 50;
 
-export const getScore = (answers = [], lives) => {
+export const TESTS_COUNT = 10;
 
-  if (!Array.isArray(answers) || answers.length !== TESTS_COUNT || typeof lives !== `number` || lives < MIN_LIVES || lives > MAX_LIVES) {
-    return -1;
-  }
-
-  return answers.reduce((acc, answer) => acc + ANSWER_TO_POINT_MAP[answer], 0) + LIVES_TO_POINT * lives;
-};
+export const INITIAL_GAME = Object.freeze({
+  level: 0,
+  livesRemaining: MAX_LIVES_REMAINING,
+  answers: [],
+  currentStepTime: 30
+});
 
 export const reduceLives = (lives) => {
 
-  if (typeof lives !== `number` || lives <= MIN_LIVES || lives > MAX_LIVES) {
+  if (typeof lives !== `number` || lives <= 0 || lives > MAX_LIVES_REMAINING) {
     return -1;
   }
 
@@ -38,7 +38,7 @@ export const changeLevel = (game, level) => {
     level
   });
 
-  if (typeof level !== `number` || level < 0 || level > MAX_LEVELS || level === Infinity || level === -Infinity) {
+  if (typeof level !== `number` || level < 0 || level > MAX_LIVES_REMAINING || level === Infinity || level === -Infinity) {
     newGame.level = -1;
   }
 

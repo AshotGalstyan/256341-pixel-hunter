@@ -1,6 +1,7 @@
-import {changeScreen} from './utilites.js';
-import introScreen from './intro.js';
+import {showIntro} from './intro.js';
 
-changeScreen(introScreen);
+showIntro();
 
-export default introScreen;
+const debug = true;
+
+export default debug;
