@@ -1,5 +1,5 @@
 import {changeScreen, render} from './utilites.js';
-import rulesScreen from './rules.js';
+import {showRules} from './rules.js';
 
 const template = `
 <section class="greeting central--blur">
@@ -29,7 +29,9 @@ const element = render(template);
 const nextButton = element.querySelector(`.greeting__continue`);
 
 nextButton.addEventListener(`click`, () => {
-  changeScreen(rulesScreen);
+  showRules(showGreeting);
 });
 
-export default element;
+export const showGreeting = () => {
+  changeScreen(element);
+};
