@@ -7,11 +7,13 @@ export const LIVES_TO_POINT = 50;
 export const FAST_LIMIT = 10;
 export const SLOW_LIMIT = 20;
 
+// Add new state "dead" for wrong answer by Time limit
 export const ANSWER_TO_POINT_MAP = {
   correct: 100,
   fast: 150,
   slow: 50,
-  wrong: 0
+  wrong: 0,
+  dead: 0
 };
 
 export const LAYOUTS = new Map([
@@ -21,7 +23,8 @@ export const LAYOUTS = new Map([
       title: `Угадайте для каждого изображения фото или рисунок?`,
       totalImages: 2,
       mandatory: ``,
-      answersCount: 2
+      answersCount: 2,
+      selectionWay: `image2type`
     }
   ],
   [
@@ -30,7 +33,8 @@ export const LAYOUTS = new Map([
       title: `Угадай, фото или рисунок?`,
       totalImages: 1,
       mandatory: ``,
-      answersCount: 1
+      answersCount: 1,
+      selectionWay: `image2type`
     }
   ],
   [
@@ -39,7 +43,8 @@ export const LAYOUTS = new Map([
       title: `Найдите фото среди изображений`,
       totalImages: 3,
       mandatory: `photo`,
-      answersCount: 1
+      answersCount: 1,
+      selectionWay: `type2image`
     }
   ],
   [
@@ -48,7 +53,8 @@ export const LAYOUTS = new Map([
       title: `Найдите рисунок среди изображений`,
       totalImages: 3,
       mandatory: `paint`,
-      answersCount: 1
+      answersCount: 1,
+      selectionWay: `type2image`
     }
   ]
 ]);

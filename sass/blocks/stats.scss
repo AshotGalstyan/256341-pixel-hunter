@@ -26,6 +26,10 @@
     background: url("../img/result-wrong.svg") no-repeat center;
   }
 
+  &--dead {
+    background: url("../img/result-dead.svg") no-repeat center;
+  }
+
   &--correct {
     background: url("../img/result-correct.svg") no-repeat center;
   }

@@ -9,6 +9,7 @@ import {IMAGES} from './data/game-data.js';
 import {INITIAL_GAME, TOTAL_STEPS, MAX_TIME_LIMIT, FAST_LIMIT, SLOW_LIMIT, LAYOUTS} from './data/data.js';
 
 const countOfImagesType = (selected, imageType) => {
+
   return selected.reduce(function (accumulator, currentValue) {
     return accumulator + (IMAGES.get(currentValue).type === imageType);
   }, 0);
@@ -56,22 +57,15 @@ const generateScreenplay = (gameImages, layouts, totalSteps) => {
     let layout = (candidates[0].substr(0, 1) !== previousLayout.substr(0, 1) ? candidates[0] : candidates[1]);
     previousLayout = layout;
 
-    let images;
+    const images = (LAYOUTS.get(layout).selectionWay === `image2type` ?
+      randomElement(srcs, LAYOUTS.get(layout).totalImages) :
+      takeFixedImages(srcs, LAYOUTS.get(layout).mandatory));
 
-    switch (layout) {
-      case `2 Columns`:
-        images = randomElement(srcs, 2);
-        break;
-      case `3 Columns with photo`:
-        images = takeFixedImages(srcs, `photo`);
-        break;
-      case `3 Columns with paint`:
-        images = takeFixedImages(srcs, `paint`);
-        break;
-      default:
-        images = randomElement(srcs, 1);
-    }
-    out.push({layout, images});
+    const trueAnswers = (LAYOUTS.get(layout).selectionWay === `image2type` ?
+      images.map((el) => IMAGES.get(el).type) :
+      images.filter((el) => IMAGES.get(el).type === LAYOUTS.get(layout).mandatory));
+
+    out.push({layout, images, trueAnswers});
   }
   return out;
 };
@@ -79,48 +73,12 @@ const generateScreenplay = (gameImages, layouts, totalSteps) => {
 const gameStepShow = (stepScreenplay) => {
 
   if (stepScreenplay.layout === `1 Columns`) {
-
     return show1Col(stepScreenplay.layout, stepScreenplay.images);
-
-  } if (stepScreenplay.layout === `2 Columns`) {
-
+  } else if (stepScreenplay.layout === `2 Columns`) {
     return show2Col(stepScreenplay.layout, stepScreenplay.images);
-  }
-
-  return show3Col(stepScreenplay.layout, stepScreenplay.images);
-
-};
-
-const analysisResponse = (layout, images, levelAnswers) => {
-
-  const StepTime = Math.floor(Math.random() * 30) + 1;
-
-  let trueAnswers = [];
-  let realAnswers = [];
-
-  if (layout === `1 Columns`) {
-    trueAnswers.push(IMAGES.get(images[0]).type);
-    realAnswers = levelAnswers;
-  } else if (layout === `2 Columns`) {
-    trueAnswers.push(IMAGES.get(images[0]).type);
-    trueAnswers.push(IMAGES.get(images[1]).type);
-    realAnswers = levelAnswers;
   } else {
-    trueAnswers.push(IMAGES.get(images[0]).type);
-    realAnswers.push(IMAGES.get(levelAnswers[0]).type);
+    return show3Col(stepScreenplay.layout, stepScreenplay.images);
   }
-
-  let result = `wrong`;
-  if (trueAnswers.join() === realAnswers.join()) {
-    result = `correct`;
-    if (StepTime < FAST_LIMIT) {
-      result = `fast`;
-    } else if (StepTime > SLOW_LIMIT) {
-      result = `slow`;
-    }
-  }
-
-  return result;
 };
 
 const nextStep = (game, result) => {
@@ -148,22 +106,32 @@ const die = (game) => {
 
 const canContinue = (game) => game.lives - 1 > 0;
 
-const selectionTest = (backButtonRender, game, layout, images) => {
+const selectionTest = (backButtonRender, game) => {
+
+  const layout = game.screenplay[game.step].layout;
 
   const checkedControls = document.querySelectorAll(`.game__content input[type="radio"]:checked`);
 
   if (LAYOUTS.get(layout).answersCount === checkedControls.length) {
 
-    const levelAnswers = [];
-    for (const el of checkedControls) {
-      levelAnswers.push(el.value);
-    }
+    const levelAnswers = [...checkedControls].map((el) => el.value);
 
-    const result = analysisResponse(layout, images, levelAnswers);
+    let result = `wrong`;
+    if (game.screenplay[game.step].trueAnswers.join() === levelAnswers.join()) {
+      result = `correct`;
+
+      const StepTime = Math.floor(Math.random() * 30) + 1;
+
+      if (StepTime < FAST_LIMIT) {
+        result = `fast`;
+      } else if (StepTime > SLOW_LIMIT) {
+        result = `slow`;
+      }
+    }
 
     if (Math.floor(Math.random() * 100) < 20) {
       game = die(game);
-      game = nextStep(game, `wrong`);
+      game = nextStep(game, `dead`);
     } else {
       game = nextStep(game, result);
     }
@@ -194,14 +162,13 @@ const updateGame = (game, backButtonRender) => {
 
   controls.forEach((control) => {
     control.addEventListener(`click`, () => {
-      selectionTest(backButtonRender, game, game.screenplay[game.step].layout, game.screenplay[game.step].images);
+      selectionTest(backButtonRender, game);
     });
   });
 
   changeScreen(element);
 
 };
-
 
 export const showGame = (backButtonRender) => {
 
