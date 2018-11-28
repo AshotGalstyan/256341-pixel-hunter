@@ -24,7 +24,9 @@ export const LAYOUTS = new Map([
       totalImages: 2,
       mandatory: ``,
       answersCount: 2,
-      selectionWay: `image2type`
+      selectionWay: `image2type`,
+      width: 468,
+      height: 458
     }
   ],
   [
@@ -34,7 +36,9 @@ export const LAYOUTS = new Map([
       totalImages: 1,
       mandatory: ``,
       answersCount: 1,
-      selectionWay: `image2type`
+      selectionWay: `image2type`,
+      width: 705,
+      height: 455
     }
   ],
   [
@@ -44,7 +48,9 @@ export const LAYOUTS = new Map([
       totalImages: 3,
       mandatory: `photo`,
       answersCount: 1,
-      selectionWay: `type2image`
+      selectionWay: `type2image`,
+      width: 304,
+      height: 455
     }
   ],
   [
@@ -54,7 +60,9 @@ export const LAYOUTS = new Map([
       totalImages: 3,
       mandatory: `paint`,
       answersCount: 1,
-      selectionWay: `type2image`
+      selectionWay: `type2image`,
+      width: 304,
+      height: 455
     }
   ]
 ]);
