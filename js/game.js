@@ -9,11 +9,6 @@ import {IMAGES} from './data/game-data.js';
 import {INITIAL_GAME, TOTAL_STEPS, MAX_TIME_LIMIT, FAST_LIMIT, SLOW_LIMIT, LAYOUTS} from './data/data.js';
 
 const countOfImagesType = (selected, imageType) => {
-
-  if (selected.length === 0) {
-    return 0;
-  }
-
   return selected.reduce(function (accumulator, currentValue) {
     return accumulator + (IMAGES.get(currentValue).type === imageType);
   }, 0);
