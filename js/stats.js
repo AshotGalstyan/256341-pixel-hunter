@@ -5,29 +5,19 @@ import {ANSWER_TO_POINT_MAP, LIVES_TO_POINT, TOTAL_STEPS} from './data/data.js';
 import {ARCHIVE} from './data/game-data.js';
 
 const getScore = (answers, lives) => {
-  let scoreBase = {
-    wrong: 0,
-    correct: 0,
-    slow: 0,
-    fast: 0
-  };
 
-  let score = {
-    total: 0,
-    correct: 0,
-    slow: 0,
-    fast: 0,
-    lives: 0
-  };
+  const score = answers.reduce((acc, answer) => {
+    acc[answer] = (acc[answer] || 0) + 1;
+    return acc;
+  }, {});
 
-  answers.forEach((answer) => {
-    scoreBase[answer] = scoreBase[answer] + 1;
-  });
-
-  score.total = answers.reduce((acc, answer) => acc + ANSWER_TO_POINT_MAP[answer], 0) + LIVES_TO_POINT * lives;
-  score.correct = (answers.length - scoreBase.wrong) * ANSWER_TO_POINT_MAP.correct;
-  score.slow = scoreBase.slow;
-  score.fast = scoreBase.fast;
+  let total = 0;
+  for (const key in score) {
+    if (score.hasOwnProperty(key)) {
+      total += score[key] * ANSWER_TO_POINT_MAP[key];
+    }
+  }
+  score.total = total + lives * LIVES_TO_POINT;
   score.lives = lives;
 
   return score;
@@ -62,7 +52,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
     template += `
           <td class="result__points">× 100</td>
-          <td class="result__total">${currentScore.correct}</td>
+          <td class="result__total">${(currentScore.correct + currentScore.fast + currentScore.slow) * ANSWER_TO_POINT_MAP.correct}</td>
         </tr>`;
 
     if (currentScore.fast > 0) {
