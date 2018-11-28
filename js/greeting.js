@@ -29,7 +29,7 @@ const element = render(template);
 const nextButton = element.querySelector(`.greeting__continue`);
 
 nextButton.addEventListener(`click`, () => {
-  showRules();
+  showRules(showGreeting);
 });
 
 export const showGreeting = () => {

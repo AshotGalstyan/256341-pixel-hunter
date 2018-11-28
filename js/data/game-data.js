@@ -1,77 +1,65 @@
-export const PIXEL_HUNTER = [
-  {
-    case: 1,
-    title: `Угадайте для каждого изображения фото или рисунок?`,
-    images: [{img: `http://placehold.it/468x458`, type: `photo`}, {img: `http://placehold.it/468x458`, type: `paint`}],
-    answers: [`photo`, `paint`]
-  },
-  {
-    case: 2,
-    title: `Угадай, фото или рисунок?`,
-    images: [{img: `http://placehold.it/705x455`, type: `photo`}],
-    answers: [`photo`]
-  },
-  {
-    case: 3,
-    title: `Найдите фото среди изображений`,
-    images: [{img: `http://placehold.it/304x455`, type: `photo`}, {img: `http://placehold.it/304x455`, type: `paint`}, {img: `http://placehold.it/304x455`, type: `paint`}],
-    answers: [`0`]
-  },
-  {
-    case: 3,
-    title: `Найдите рисунок среди изображений`,
-    images: [{img: `http://placehold.it/304x455`, type: `photo`}, {img: `http://placehold.it/304x455`, type: `paint`}, {img: `http://placehold.it/304x455`, type: `photo`}],
-    answers: [`1`]
-  },
-  {
-    case: 1,
-    title: `Угадайте для каждого изображения фото или рисунок?`,
-    images: [{img: `http://placehold.it/468x458`, type: `photo`}, {img: `http://placehold.it/468x458`, type: `photo`}],
-    answers: [`photo`, `photo`]
-  },
-  {
-    case: 2,
-    title: `Угадай, фото или рисунок?`,
-    images: [{img: `http://placehold.it/705x455`, type: `paint`}],
-    answers: [`paint`]
-  },
-  {
-    case: 1,
-    title: `Угадайте для каждого изображения фото или рисунок?`,
-    images: [{img: `http://placehold.it/468x458`, type: `photo`}, {img: `http://placehold.it/468x458`, type: `paint`}],
-    answers: [`photo`, `paint`]
-  },
-  {
-    case: 3,
-    title: `Найдите фото среди изображений`,
-    images: [{img: `http://placehold.it/304x455`, type: `photo`}, {img: `http://placehold.it/304x455`, type: `paint`}, {img: `http://placehold.it/304x455`, type: `paint`}],
-    answers: [`0`]
-  },
-  {
-    case: 2,
-    title: `Угадай, фото или рисунок?`,
-    images: [{img: `http://placehold.it/705x455`, type: `photo`}],
-    answers: [`photo`]
-  },
-  {
-    case: 3,
-    title: `Найдите рисунок среди изображений`,
-    images: [{img: `http://placehold.it/304x455`, type: `photo`}, {img: `http://placehold.it/304x455`, type: `photo`}, {img: `http://placehold.it/304x455`, type: `paint`}],
-    answers: [`2`]
-  }
-];
+export const IMAGES = new Map([
+  [
+    `https://k42.kn3.net/CF42609C8.jpg`,
+    {
+      type: `photo`,
+      width: 600,
+      height: 831
+    }
+  ],
+  [
+    `https://i.imgur.com/DiHM5Zb.jpg`,
+    {
+      type: `photo`,
+      width: 1264,
+      height: 1864
+    }
+  ],
+  [
+    `https://k32.kn3.net/5C7060EC5.jpg`,
+    {
+      type: `photo`,
+      width: 1200,
+      height: 900
+    }
+  ],
+  [
+    `https://k42.kn3.net/D2F0370D6.jpg`,
+    {
+      type: `paint`,
+      width: 468,
+      height: 354
+    }
+  ],
+  [
+    `http://i.imgur.com/1KegWPz.jpg`,
+    {
+      type: `paint`,
+      width: 1080,
+      height: 720
+    }
+  ],
+  [
+    `http://i.imgur.com/DKR1HtB.jpg`,
+    {
+      type: `paint`,
+      width: 1120,
+      height: 2965
+    }
+  ]
+]);
 
 export const ARCHIVE = [
   {
-    livesRemaining: 1,
+    lives: 1,
     answers: [`wrong`, `slow`, `wrong`, `slow`, `correct`, `slow`, `wrong`]
   },
   {
-    livesRemaining: 2,
+    lives: 2,
     answers: [`slow`, `correct`, `correct`, `slow`, `wrong`, `wrong`, `correct`, `wrong`, `correct`, `wrong`]
   },
   {
-    livesRemaining: 0,
+    lives: 3,
     answers: [`fast`, `wrong`, `slow`, `wrong`, `slow`, `correct`, `slow`, `wrong`, `fast`, `slow`]
   }
 ];

@@ -1,160 +1,221 @@
-import {changeScreen, render, showCurrentState} from './utilites.js';
-import {showIntro} from './intro.js';
-import logo from './logo.js';
-import {showLevel1} from './level-1.js';
-import {showLevel2} from './level-2.js';
-import {showLevel3} from './level-3.js';
+import {changeScreen, randomElement, render, showCurrentState} from './utilites.js';
+import {showHeader} from './header.js';
 import {showStats} from './stats.js';
+import {handleBackButton} from './back-button.js';
+import {show1Col} from './game-1-col.js';
+import {show2Col} from './game-2-col.js';
+import {show3Col} from './game-3-col.js';
+import {IMAGES} from './data/game-data.js';
+import {INITIAL_GAME, TOTAL_STEPS, MAX_TIME_LIMIT, FAST_LIMIT, SLOW_LIMIT, LAYOUTS} from './data/data.js';
 
-import {PIXEL_HUNTER} from './data/game-data.js';
-import {INITIAL_GAME, TESTS_COUNT} from './data/data.js';
+const countOfImagesType = (selected, imageType) => {
 
-const renderLives = (currentLives, totalLives) => {
-
-  let out = ``;
-
-  for (let i = 0; i < totalLives - currentLives - 1; i++) {
-    out += `<img src="img/heart__empty.svg" class="game__heart" alt=" Missed Life" width="31" height="27">`;
+  if (selected.length === 0) {
+    return 0;
   }
 
-  for (let i = 0; i <= currentLives; i++) {
-    out += `<img src="img/heart__full.svg" class="game__heart" alt="Life" width="31" height="27">`;
+  return selected.reduce(function (accumulator, currentValue) {
+    return accumulator + (IMAGES.get(currentValue).type === imageType);
+  }, 0);
+};
+
+const takeFixedImages = (from, imageType) => {
+
+  let index = 0;
+  let selected = [];
+
+  while (selected.length < 3) {
+
+    index = (index === from.length - 1 ? 0 : index + 1);
+
+    const neededAspect = (countOfImagesType(selected, imageType) === 1 ? false : true);
+
+    if (neededAspect) {
+      if (selected.indexOf(from[index]) === -1 && IMAGES.get(from[index]).type === imageType) {
+        selected.push(from[index]);
+      }
+    } else {
+      if (selected.indexOf(from[index]) === -1 && IMAGES.get(from[index]).type !== imageType) {
+        selected.push(from[index]);
+      }
+    }
+  }
+
+  return selected.sort(() => 0.5 - Math.random());
+
+};
+
+const generateScreenplay = (gameImages, layouts, totalSteps) => {
+
+  let out = [];
+
+  const srcs = [...gameImages.keys()];
+  const layoutTypes = [...layouts.keys()];
+
+  let previousLayout = ``;
+
+  for (let i = 0; i < totalSteps; i++) {
+
+    const candidates = randomElement(layoutTypes, 2);
+
+    let layout = (candidates[0].substr(0, 1) !== previousLayout.substr(0, 1) ? candidates[0] : candidates[1]);
+    previousLayout = layout;
+
+    let images;
+
+    switch (layout) {
+      case `2 Columns`:
+        images = randomElement(srcs, 2);
+        break;
+      case `3 Columns with photo`:
+        images = takeFixedImages(srcs, `photo`);
+        break;
+      case `3 Columns with paint`:
+        images = takeFixedImages(srcs, `paint`);
+        break;
+      default:
+        images = randomElement(srcs, 1);
+    }
+    out.push({layout, images});
   }
   return out;
 };
 
-const goNextLevel = (state, answers) => {
+const gameStepShow = (stepScreenplay) => {
 
-  // Fix Current results
-  const currentLevel = PIXEL_HUNTER[state.level];
+  if (stepScreenplay.layout === `1 Columns`) {
 
-  let currResult = false;
-  if (JSON.stringify(currentLevel.answers) === JSON.stringify(answers)) {
-    currResult = true;
+    return show1Col(stepScreenplay.layout, stepScreenplay.images);
+
+  } if (stepScreenplay.layout === `2 Columns`) {
+
+    return show2Col(stepScreenplay.layout, stepScreenplay.images);
   }
 
-  // document.querySelector(`#debug`).innerHTML = currResult + `|currentLevel: ` + JSON.stringify(currentLevel.answers) + `, real: ` + JSON.stringify(answers);
+  return show3Col(stepScreenplay.layout, stepScreenplay.images);
+
+};
+
+const analysisResponse = (layout, images, levelAnswers) => {
 
   const StepTime = Math.floor(Math.random() * 30) + 1;
 
-  let result = `correct`;
-  if (currResult) {
-    if (StepTime < 10) {
-      result = `fast`;
-    } else if (StepTime > 20) {
-      result = `slow`;
-    }
+  let trueAnswers = [];
+  let realAnswers = [];
+
+  if (layout === `1 Columns`) {
+    trueAnswers.push(IMAGES.get(images[0]).type);
+    realAnswers = levelAnswers;
+  } else if (layout === `2 Columns`) {
+    trueAnswers.push(IMAGES.get(images[0]).type);
+    trueAnswers.push(IMAGES.get(images[1]).type);
+    realAnswers = levelAnswers;
   } else {
-    result = `wrong`;
+    trueAnswers.push(IMAGES.get(images[0]).type);
+    realAnswers.push(IMAGES.get(levelAnswers[0]).type);
   }
 
-  state.answers.push(result);
+  let result = `wrong`;
+  if (trueAnswers.join() === realAnswers.join()) {
+    result = `correct`;
+    if (StepTime < FAST_LIMIT) {
+      result = `fast`;
+    } else if (StepTime > SLOW_LIMIT) {
+      result = `slow`;
+    }
+  }
 
-  if (state.level < TESTS_COUNT - 1) {
+  return result;
+};
 
-    state.level += 1;
+const nextStep = (game, result) => {
 
-    // document.querySelector(`#debug`).innerHTML = `TESTS_COUNT: ` + TESTS_COUNT +`, state: ` + JSON.stringify(state);
+  game.answers.push(result);
+  game.currentStepTime = MAX_TIME_LIMIT;
 
-    updateGame(state);
-
+  if (game.step < TOTAL_STEPS - 1) {
+    game.step += 1;
   } else {
+    game.gameOver = true;
+  }
 
-    // document.querySelector(`#debug`).innerHTML = `showStats -- TESTS_COUNT: ` + TESTS_COUNT +`, state: ` + JSON.stringify(state);
+  return game;
+};
 
-    showStats(state);
+const die = (game) => {
+  if (!canContinue(game)) {
+    game.gameOver = true;
+  }
+  game.lives -= 1;
 
+  return game;
+};
+
+const canContinue = (game) => game.lives - 1 > 0;
+
+const selectionTest = (backButtonRender, game, layout, images) => {
+
+  const checkedControls = document.querySelectorAll(`.game__content input[type="radio"]:checked`);
+
+  if (LAYOUTS.get(layout).answersCount === checkedControls.length) {
+
+    const levelAnswers = [];
+    for (const el of checkedControls) {
+      levelAnswers.push(el.value);
+    }
+
+    const result = analysisResponse(layout, images, levelAnswers);
+
+    if (Math.floor(Math.random() * 100) < 20) {
+      game = die(game);
+      game = nextStep(game, `wrong`);
+    } else {
+      game = nextStep(game, result);
+    }
+
+    if (game.gameOver) {
+      showStats(game, backButtonRender);
+    } else {
+      updateGame(game, backButtonRender);
+    }
   }
 };
 
-const updateGame = (state) => {
+const updateGame = (game, backButtonRender) => {
 
-  const currentLevel = PIXEL_HUNTER[state.level];
-
-  let template = `
-  <header class="header">` + logo + `
-    <div class="game__timer">NN</div>
-    <div class="game__lives">` + renderLives(state.livesRemaining, state.livesRemaining + 1) + `</div>
-  </header>
+  const template = `${showHeader(game.currentStepTime, game.lives)}
   <section class="game">
-    <p class="game__task">` + currentLevel.title + `</p>`;
-
-  switch (currentLevel.case) {
-    case 1:
-      template += showLevel1(currentLevel);
-      break;
-    case 2:
-      template += showLevel2(currentLevel);
-      break;
-    default:
-      template += showLevel3(currentLevel);
-  }
-
-  template += `
-    <ul class="stats">` + showCurrentState(state.answers, TESTS_COUNT) + `</ul>
+    ${gameStepShow(game.screenplay[game.step])}
+    <ul class="stats">` + showCurrentState(game.answers, TOTAL_STEPS) + `</ul>
   </section>
   `;
 
   const element = render(template);
 
-  changeScreen(element);
+  handleBackButton(element, backButtonRender);
 
-  const backButton = element.querySelector(`.back`);
-  backButton.addEventListener(`click`, () => {
-    showIntro();
+  // Checker Listeners
+  const controls = element.querySelectorAll(`.game__content input[type="radio"]`);
+
+  controls.forEach((control) => {
+    control.addEventListener(`click`, () => {
+      selectionTest(backButtonRender, game, game.screenplay[game.step].layout, game.screenplay[game.step].images);
+    });
   });
 
-  // Add Listeners
-  const gameFormClasses = Array.from(element.querySelector(`.game__content`).classList);
-  if (gameFormClasses.length === 1) {
-    const controls = element.querySelectorAll(`input[type="radio"]`);
+  changeScreen(element);
 
-    controls.forEach((control) => {
-      control.addEventListener(`click`, () => {
-        selectionTest();
-      });
-    });
-
-    const selectionTest = () => {
-      if (element.querySelectorAll(`input[type="radio"]:checked`).length === 2) {
-        const levelAnswers = [];
-        for (let el of element.querySelectorAll(`input[type="radio"]:checked`)) {
-          levelAnswers.push(el.value);
-        }
-
-        goNextLevel(state, levelAnswers);
-      }
-    };
-  } else {
-    if (gameFormClasses.indexOf(`game__content--wide`) > -1) {
-
-      const controls = element.querySelectorAll(`input[type="radio"]`);
-
-      controls.forEach((control) => {
-        control.addEventListener(`click`, () => {
-          goNextLevel(state, [control.value]);
-        });
-      });
-
-    } else {
-
-      const controls = element.querySelectorAll(`.game__option`);
-
-      controls.forEach((control) => {
-        control.addEventListener(`click`, () => {
-          goNextLevel(state, [control.dataset.number]);
-        });
-      });
-
-    }
-  }
 };
 
-export const showGame = () => {
+
+export const showGame = (backButtonRender) => {
 
   let game = Object.assign({}, INITIAL_GAME);
 
-  updateGame(game);
+  game.answers = [];
+  game.screenplay = generateScreenplay(IMAGES, LAYOUTS, TOTAL_STEPS);
+
+  updateGame(game, backButtonRender);
 
 };
 

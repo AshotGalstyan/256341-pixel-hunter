@@ -1,11 +1,3 @@
-export const randomElement = (fromArray = [], n = 1) => {
-
-  if (fromArray.length === 0) {
-    return [];
-  }
-  return fromArray.sort(() => 0.5 - Math.random()).slice(0, n);
-};
-
 export const showCurrentState = (answers, total) => {
 
   let out = ``;
@@ -16,6 +8,14 @@ export const showCurrentState = (answers, total) => {
 
   return out;
 
+};
+
+export const randomElement = (fromArray = [], n = 1) => {
+
+  if (fromArray.length === 0) {
+    return [];
+  }
+  return fromArray.sort(() => 0.5 - Math.random()).slice(0, n);
 };
 
 export const render = (template) => {

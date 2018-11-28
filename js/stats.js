@@ -1,7 +1,7 @@
-import {changeScreen, render, showCurrentState} from './utilites.js';
-import logo from './logo.js';
-import {showIntro} from './intro.js';
-import {ANSWER_TO_POINT_MAP, LIVES_TO_POINT, TESTS_COUNT} from './data/data.js';
+import {showCurrentState, changeScreen, render} from './utilites.js';
+import {showHeader} from './header.js';
+import {handleBackButton} from './back-button.js';
+import {ANSWER_TO_POINT_MAP, LIVES_TO_POINT, TOTAL_STEPS} from './data/data.js';
 import {ARCHIVE} from './data/game-data.js';
 
 const getScore = (answers, lives) => {
@@ -38,8 +38,6 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
   const currentScore = getScore(answers, lives);
 
-  // document.querySelector(`#debug`).innerHTML = `answers: ` + answers.join(`,`) + ` | currentScore: ` + JSON.stringify(currentScore);
-
   let template = `
   <table class="result__table">
         <tr>
@@ -51,7 +49,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
   template += `
         </td>`;
 
-  if (answers.length < TESTS_COUNT) {
+  if (answers.length < TOTAL_STEPS) {
 
     template += `
         <td class="result__total"></td>
@@ -114,28 +112,24 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
 };
 
-export const showStats = (state) => {
+export const showStats = (game, backButtonRender) => {
 
-  let template = `
-  <header class="header">` + logo + `</header>
+  let template = `${showHeader()}
   <section class="result">
-    <h2 class="result__title">Победа!</h2>` + showCurrentScore(1, state.answers, state.livesRemaining + 1);
-
+    <h2 class="result__title">${game.answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`}</h2>
+    ${showCurrentScore(1, game.answers, game.lives)}`;
 
   for (let i = 0; i < ARCHIVE.length; i++) {
-    template += showCurrentScore(i + 2, ARCHIVE[i].answers, ARCHIVE[i].livesRemaining);
+    template += showCurrentScore(i + 2, ARCHIVE[i].answers, ARCHIVE[i].lives);
   }
+
   template += `
   </section>
   `;
 
   const element = render(template);
 
-  const backButton = element.querySelector(`.back`);
-
-  backButton.addEventListener(`click`, () => {
-    showIntro();
-  });
+  handleBackButton(element, backButtonRender);
 
   changeScreen(element);
 

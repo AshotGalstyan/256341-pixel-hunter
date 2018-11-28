@@ -1,55 +1,52 @@
 import {changeScreen, render} from './utilites.js';
-import {showIntro} from './intro.js';
-import logo from './logo.js';
+import {showHeader} from './header.js';
+import {handleBackButton} from './back-button.js';
 import {showGame} from './game.js';
 
-const template = `
-<header class="header">` + logo + `</header>
-<section class="rules">
-  <h2 class="rules__title">Правила</h2>
-  <ul class="rules__description">
-    <li>Угадай 10 раз для каждого изображения фото
-      <img class="rules__icon" src="img/icon-photo.png" width="32" height="31" alt="Фото"> или рисунок
-      <img class="rules__icon" src="img/icon-paint.png" width="32" height="31" alt="Рисунок"></li>
-    <li>Фотографиями или рисунками могут быть оба изображения.</li>
-    <li>На каждую попытку отводится 30 секунд.</li>
-    <li>Ошибиться можно не более 3 раз.</li>
-  </ul>
-  <p class="rules__ready">Готовы?</p>
-  <form class="rules__form">
-    <input class="rules__input" type="text" placeholder="Ваше Имя" value="">
-    <button class="rules__button  continue" type="submit" disabled>Go!</button>
-  </form>
-</section>
-`;
+export const showRules = (backButtonRender) => {
 
-const element = render(template);
+  const template = `${showHeader()}
+  <section class="rules">
+    <h2 class="rules__title">Правила</h2>
+    <ul class="rules__description">
+      <li>Угадай 10 раз для каждого изображения фото
+        <img class="rules__icon" src="img/icon-photo.png" width="32" height="31" alt="Фото"> или рисунок
+        <img class="rules__icon" src="img/icon-paint.png" width="32" height="31" alt="Рисунок"></li>
+      <li>Фотографиями или рисунками могут быть оба изображения.</li>
+      <li>На каждую попытку отводится 30 секунд.</li>
+      <li>Ошибиться можно не более 3 раз.</li>
+    </ul>
+    <p class="rules__ready">Готовы?</p>
+    <form class="rules__form">
+      <input class="rules__input" type="text" placeholder="Ваше Имя" value="">
+      <button class="rules__button  continue" type="submit" disabled>Go!</button>
+    </form>
+  </section>
+  `;
 
-const backButton = element.querySelector(`.back`);
+  const element = render(template);
 
-backButton.addEventListener(`click`, () => {
-  showIntro();
-});
+  handleBackButton(element, backButtonRender);
 
-const name = element.querySelector(`.rules__input`);
+  const name = element.querySelector(`.rules__input`);
 
-name.addEventListener(`keyup`, () => {
+  name.addEventListener(`keyup`, () => {
 
-  if (name.value.trim() !== ``) {
-    nextButton.disabled = false;
-  } else {
-    name.value = ``;
-    nextButton.disabled = true;
-  }
-});
+    if (name.value.trim() !== ``) {
+      nextButton.disabled = false;
+    } else {
+      name.value = ``;
+      nextButton.disabled = true;
+    }
+  });
 
-const nextButton = element.querySelector(`.rules__button`);
+  const nextButton = element.querySelector(`.rules__button`);
 
-nextButton.addEventListener(`click`, () => {
-  name.value = name.value.trim();
-  showGame();
-});
+  nextButton.addEventListener(`click`, () => {
+    name.value = name.value.trim();
+    showGame(backButtonRender);
+  });
 
-export const showRules = () => {
   changeScreen(element);
+
 };
