@@ -113,7 +113,7 @@ const selectionTest = (backButtonRender, game) => {
 
     const levelAnswers = [...checkedControls].map((el) => el.value);
 
-    if (game.screenplay[game.step].trueAnswers.join() === levelAnswers.join()) {
+    if (levelAnswers.every((el) => game.screenplay[game.step].trueAnswers.indexOf(el) > -1)) {
 
       const StepTime = Math.floor(Math.random() * 40) + 1;
 
