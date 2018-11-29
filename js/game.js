@@ -24,14 +24,12 @@ const takeFixedImages = (from, imageType) => {
 
     index = (index === from.length - 1 ? 0 : index + 1);
 
-    const neededAspect = (countOfImagesType(selected, imageType) === 1 ? false : true);
-
-    if (neededAspect) {
-      if (selected.indexOf(from[index]) === -1 && IMAGES.get(from[index]).type === imageType) {
+    if (countOfImagesType(selected, imageType) === 1) {
+      if (selected.indexOf(from[index]) === -1 && IMAGES.get(from[index]).type !== imageType) {
         selected.push(from[index]);
       }
     } else {
-      if (selected.indexOf(from[index]) === -1 && IMAGES.get(from[index]).type !== imageType) {
+      if (selected.indexOf(from[index]) === -1 && IMAGES.get(from[index]).type === imageType) {
         selected.push(from[index]);
       }
     }
@@ -52,9 +50,8 @@ const generateScreenplay = (gameImages, layouts, totalSteps) => {
 
   for (let i = 0; i < totalSteps; i++) {
 
-    const candidates = randomElement(layoutTypes, 2);
-
-    let layout = (candidates[0].substr(0, 1) !== previousLayout.substr(0, 1) ? candidates[0] : candidates[1]);
+    const candidates = layoutTypes.filter((el) => el.substr(0, 1) !== previousLayout.substr(0, 1));
+    const layout = candidates.sort(() => 0.5 - Math.random())[0];
     previousLayout = layout;
 
     const images = (LAYOUTS.get(layout).selectionWay === `image2type` ?
@@ -70,7 +67,7 @@ const generateScreenplay = (gameImages, layouts, totalSteps) => {
   return out;
 };
 
-const gameStepShow = (stepScreenplay) => {
+const getTemplate = (stepScreenplay) => {
 
   if (stepScreenplay.layout === `1 Columns`) {
     return show1Col(stepScreenplay.layout, stepScreenplay.images);
@@ -104,7 +101,7 @@ const die = (game) => {
   return game;
 };
 
-const canContinue = (game) => game.lives - 1 > 0;
+const canContinue = (game) => game.lives;
 
 const selectionTest = (backButtonRender, game) => {
 
@@ -116,24 +113,22 @@ const selectionTest = (backButtonRender, game) => {
 
     const levelAnswers = [...checkedControls].map((el) => el.value);
 
-    let result = `wrong`;
     if (game.screenplay[game.step].trueAnswers.join() === levelAnswers.join()) {
-      result = `correct`;
 
-      const StepTime = Math.floor(Math.random() * 30) + 1;
+      const StepTime = Math.floor(Math.random() * 40) + 1;
 
-      if (StepTime < FAST_LIMIT) {
-        result = `fast`;
+      if (StepTime > MAX_TIME_LIMIT) {
+        game = die(game);
+        game = nextStep(game, `dead`);
       } else if (StepTime > SLOW_LIMIT) {
-        result = `slow`;
+        game = nextStep(game, `slow`);
+      } else if (StepTime < FAST_LIMIT) {
+        game = nextStep(game, `fast`);
+      } else {
+        game = nextStep(game, `correct`);
       }
-    }
-
-    if (Math.floor(Math.random() * 100) < 20) {
-      game = die(game);
-      game = nextStep(game, `dead`);
     } else {
-      game = nextStep(game, result);
+      game = nextStep(game, `wrong`);
     }
 
     if (game.gameOver) {
@@ -148,7 +143,7 @@ const updateGame = (game, backButtonRender) => {
 
   const template = `${showHeader(game.currentStepTime, game.lives)}
   <section class="game">
-    ${gameStepShow(game.screenplay[game.step])}
+    ${getTemplate(game.screenplay[game.step])}
     <ul class="stats">` + showCurrentState(game.answers, TOTAL_STEPS) + `</ul>
   </section>
   `;

@@ -11,6 +11,12 @@ const getScore = (answers, lives) => {
     return acc;
   }, {});
 
+  for (const key in ANSWER_TO_POINT_MAP) {
+    if (!score.hasOwnProperty(key)) {
+      score[key] = 0;
+    }
+  }
+
   let total = 0;
   for (const key in score) {
     if (score.hasOwnProperty(key)) {
