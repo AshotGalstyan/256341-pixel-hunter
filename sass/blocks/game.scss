@@ -114,11 +114,36 @@
   }
 }
 
+/* Improved display of images border in different sizes on hover */
+/* Old style
+
 .game__content--triple .game__option {
   cursor: pointer;
 
   width: 304px;
   height: 455px;
+
+  &:hover {
+    border-color: $link-hover-color;
+  }
+
+  &:active {
+    border-color: $link-active-color;
+  }
+}
+
+*/
+
+/* Changed */
+
+.game__content--triple .game__option {
+  width: 304px;
+  height: 455px;
+}
+
+.game__content--triple img {
+  cursor: pointer;
+  border: 10px solid transparent;
 
   &:hover {
     border-color: $link-hover-color;

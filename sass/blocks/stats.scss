@@ -26,6 +26,8 @@
     background: url("../img/result-wrong.svg") no-repeat center;
   }
 
+  /* Add new style for dead state */
+
   &--dead {
     background: url("../img/result-dead.svg") no-repeat center;
   }

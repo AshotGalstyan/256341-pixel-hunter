@@ -1,6 +1,6 @@
 import {debug, LAYOUTS} from './data/data.js';
 import {IMAGES} from './data/game-data.js';
-import {makeImgTag} from './utilites.js';
+import {createImage} from './utilites.js';
 
 export const show2Col = (layout, images) => {
 
@@ -23,7 +23,7 @@ export const show2Col = (layout, images) => {
   <p class="game__task">${LAYOUTS.get(layout).title}</p>
   <form class="game__content">
     <div class="game__option">
-      ${makeImgTag(images[0], `Option 1`, (debug ? IMAGES.get(images[0]).type : ``), place, image1)}
+      ${createImage(images[0], `Option 1`, (debug ? IMAGES.get(images[0]).type : ``), place, image1)}
       <label class="game__answer game__answer--photo">
         <input class="visually-hidden" name="question1" type="radio" value="photo">
         <span>Фото</span>
@@ -34,7 +34,7 @@ export const show2Col = (layout, images) => {
       </label>
     </div>
     <div class="game__option">
-      ${makeImgTag(images[1], `Option 2`, (debug ? IMAGES.get(images[1]).type : ``), place, image2)}
+      ${createImage(images[1], `Option 2`, (debug ? IMAGES.get(images[1]).type : ``), place, image2)}
       <label class="game__answer  game__answer--photo">
         <input class="visually-hidden" name="question2" type="radio" value="photo">
         <span>Фото</span>

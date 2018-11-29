@@ -1,6 +1,6 @@
 import {resize} from './data/resize.js';
 
-export const makeImgTag = (src, alt, title, holderSize, imageSize) => {
+export const createImage = (src, alt, title, holderSize, imageSize) => {
 
   const size = resize(holderSize, imageSize);
 

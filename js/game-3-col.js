@@ -1,6 +1,6 @@
 import {debug, LAYOUTS} from './data/data.js';
 import {IMAGES} from './data/game-data.js';
-import {makeImgTag} from './utilites.js';
+import {createImage} from './utilites.js';
 
 export const show3Col = (layout, images) => {
 
@@ -29,19 +29,19 @@ export const show3Col = (layout, images) => {
   <form class="game__content game__content--triple">
     <div class="game__option">
       <label>
-        ${makeImgTag(images[0], `Option 1`, (debug ? IMAGES.get(images[0]).type : ``), place, image1)}
+        ${createImage(images[0], `Option 1`, (debug ? IMAGES.get(images[0]).type : ``), place, image1)}
         <input class="visually-hidden" name="question1" type="radio" value="${images[0]}">
       </label>
     </div>
     <div class="game__option">
       <label>
-        ${makeImgTag(images[1], `Option 2`, (debug ? IMAGES.get(images[1]).type : ``), place, image2)}
+        ${createImage(images[1], `Option 2`, (debug ? IMAGES.get(images[1]).type : ``), place, image2)}
         <input class="visually-hidden" name="question1" type="radio" value="${images[1]}">
       </label>
     </div>
     <div class="game__option">
       <label>
-        ${makeImgTag(images[2], `Option 3`, (debug ? IMAGES.get(images[2]).type : ``), place, image3)}
+        ${createImage(images[2], `Option 3`, (debug ? IMAGES.get(images[2]).type : ``), place, image3)}
         <input class="visually-hidden" name="question1" type="radio" value="${images[2]}">
       </label>
     </div>
