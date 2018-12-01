@@ -8,7 +8,6 @@ export const createImage = (src, alt, title, holderSize, imageSize) => {
 
 };
 
-
 export const showCurrentState = (answers, total) => {
 
   let out = ``;
@@ -29,10 +28,26 @@ export const randomElement = (fromArray = [], n = 1) => {
   return fromArray.sort(() => 0.5 - Math.random()).slice(0, n);
 };
 
+export const randomSort = () => 0.5 - Math.random();
+
+export const selectImages = (source, total = 1) => source.sort(() => 0.5 - Math.random()).slice(0,total);
+
+export const selectImagesPhotoPaint = (source, photo = 1, paint = 1) => {
+  const randomPhotos = source.filter((el) => IMAGES.get(el).type === `photo`).sort(() => 0.5 - Math.random());
+  const randomPaints = source.filter((el) => IMAGES.get(el).type === `paint`).sort(() => 0.5 - Math.random());
+  return randomPhotos.slice(photo).concat(randomPaints.slice(paint)).sort(() => 0.5 - Math.random());
+};
+
 export const render = (template) => {
   const wrapper = document.createElement(`div`);
   wrapper.innerHTML = template.trim();
   return wrapper;
+};
+
+export const buildFragment = (elements) => {
+  const fragment = document.createDocumentFragment();
+  elements.forEach((element) => fragment.appendChild(element));
+  return fragment;
 };
 
 const mainElement = document.querySelector(`#main`);
