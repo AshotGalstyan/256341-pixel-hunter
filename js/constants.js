@@ -7,16 +7,16 @@ export const LIVES_TO_POINT = 50;
 export const FAST_LIMIT = 10;
 export const SLOW_LIMIT = 20;
 
-// Add new state "dead" for wrong answer by Time limit
-export const ANSWER_TO_POINT_MAP = {
-  correct: 100,
-  fast: 150,
-  slow: 50,
-  wrong: 0,
-  dead: 0
+export const QUIZ_RESULTS = {
+  incompleate: {type: `incompleate`, points: 0},
+  correct: {type: `correct`, points: 100},
+  fast: {type: `fast`, points: 150},
+  slow: {type: `slow`, points: 50},
+  wrong: {type: `wrong`, points: 0},
+  dead: {type: `dead`, points: 0}
 };
 
-export const LAYOUTS = [`layout-1`, `layout-2`, `layout-3`, `layout-4`];
+export const LAYOUTS = [`layout1`, `layout2`, `layout3`, `layout4`];
 
 export const INITIAL_STATE = Object.freeze({
   step: 0,

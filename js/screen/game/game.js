@@ -1,7 +1,15 @@
 import HeaderView from '../../header-view.js';
 import Layout1View from './layout-1/layout-1-view.js';
+import stat from '../stat/stat.js';
 import {buildFragment, randomSort, changeScreen} from '../../utilites.js';
-import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, LAYOUTS} from '../../constants.js';
+import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, MAX_TIME_LIMIT, QUIZ_RESULTS, LAYOUTS} from '../../constants.js';
+
+const LayoutClasses = {
+  layout1: Layout1View,
+  layout2: Layout1View,
+  layout3: Layout1View,
+  layout4: Layout1View
+};
 
 const generateScreenplay = (layouts, totalSteps) => {
 
@@ -31,32 +39,68 @@ const livesLine = (lives, total) => {
 };
 
 const statsLine = (answers, total) => {
-  return answers.map((el) => `<li class="stats__result stats__result--` + el + `"></li>`) + [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`).join(` `);
+  return answers.map((el) => `<li class="stats__result stats__result--` + el + `"></li>`).join(` `) + [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`).join(` `);
+};
+
+const canContinue = (state) => state.lives;
+
+const die = (state) => {
+  if (!canContinue(state)) {
+    state.gameOver = true;
+  }
+  state.lives -= 1;
+
+  return state;
+};
+
+const nextStep = (state, result) => {
+
+  state.answers.push(result);
+  state.currentStepTime = MAX_TIME_LIMIT;
+
+  if (state.step < TOTAL_STEPS - 1) {
+    state.step += 1;
+  } else {
+    state.gameOver = true;
+  }
+
+  return state;
+};
+
+const nextAction = (gameConfig, state, header, quest) => {
+
+  if (quest.result !== QUIZ_RESULTS.incompleate.type) {
+    if (quest.result === QUIZ_RESULTS.dead.type) {
+      state = die(state);
+    }
+    state = nextStep(state, quest.result);
+
+    if (state.gameOver) {
+      header.unbind();
+      quest.unbind();
+      changeScreen(stat(gameConfig, state.answers, state.lives));
+    }
+  }
+
+  changeScreen(gameUpdate(gameConfig, state));
+
 };
 
 const gameUpdate = (gameConfig, state) => {
 
+  state.currentStepTime = Math.floor(Math.random() * 40) + 1;
+
   const header = new HeaderView(state.currentStepTime, livesLine(state.lives, MAX_LIVES));
-
-  let quest;
-  switch (state.screenplay[state.step]) {
-    case `layout-1`:
-      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
-      break;
-    case `layout-2`:
-      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
-      break;
-    case `layout-3`:
-      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
-      break;
-    default:
-      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
-  }
-
+  const quest = new LayoutClasses[state.screenplay[state.step]](statsLine(state.answers, TOTAL_STEPS));
 
   header.onClick = () => {
     header.unbind();
     changeScreen(gameConfig.beginPoint());
+  };
+
+  quest.onFinishQuest = () => {
+    quest.answerTime = state.currentStepTime;
+    nextAction(gameConfig, state, header, quest);
   };
 
   return buildFragment([header.element, quest.element]);
@@ -69,6 +113,7 @@ const game = (gameConfig) => {
 
   state.answers = [];
   state.screenplay = generateScreenplay(LAYOUTS, TOTAL_STEPS);
+  // console.log(`Begin: ` +  JSON.stringify(state));
 
   return gameUpdate(gameConfig, state);
 

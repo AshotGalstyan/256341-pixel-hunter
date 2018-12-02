@@ -1,6 +1,6 @@
 import AbstractView from '../../../abstract-view.js';
-import {debug} from '../../../constants.js';
-import {createImage, randomElement} from '../../../utilites.js';
+import {debug, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../../constants.js';
+import {createImage, randomElement, rankingAnswer} from '../../../utilites.js';
 import {IMAGES} from '../../../data/game-data.js';
 
 const getTrueAnswers = (images) => {
@@ -40,14 +40,31 @@ export default class Layout1View extends AbstractView {
       `;
   }
 
+  get result() {
+
+    if ( this.answerTime > MAX_TIME_LIMIT) {
+      return QUIZ_RESULTS.dead.type;
+    }
+    const selectedType = this.element.querySelector(`input[type="radio"]:checked`).value;
+    if (selectedType !== this.trueAnswers) {
+      return QUIZ_RESULTS.wrong.type;
+    }
+    return rankingAnswer(this.answerTime);
+  }
+
   bind() {
-    this.nextAction = this.element.querySelector(`.game__content input[type="radio"]`);
-    this.nextAction.addEventListener(`click`, this.onClick);
+    this._controls = this.element.querySelectorAll(`input[type="radio"]`);
+    this._controls.forEach((control) => {
+      control.addEventListener(`click`, this.onFinishQuest);
+    });
   }
 
   unbind() {
-    this.nextAction.removeEventListener(`click`, this.onClick);
+    this._controls.forEach((control) => {
+      control.removeEventListener(`click`, this.onFinishQuest);
+    });
   }
 
-  onClick() {}
+  onFinishQuest() {}
+
 }

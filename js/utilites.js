@@ -1,4 +1,5 @@
 import {resize} from './data/resize.js';
+import {SLOW_LIMIT, FAST_LIMIT, QUIZ_RESULTS} from './constants.js';
 
 export const createImage = (src, alt, title, holderSize, imageSize) => {
 
@@ -7,6 +8,17 @@ export const createImage = (src, alt, title, holderSize, imageSize) => {
   return `<img src="${src}" alt="${alt}" width="${size.width}" height="${size.height}" ${(title.length > 0 ? `title="` + title + `"` : ``)}>`;
 
 };
+
+export const rankingAnswer = (time) => {
+
+  if (time > SLOW_LIMIT) {
+    return QUIZ_RESULTS.slow.type;
+  }
+  else if (time < FAST_LIMIT) {
+    return QUIZ_RESULTS.fast.type;
+  }
+  return QUIZ_RESULTS.correct.type;
+}
 
 export const showCurrentState = (answers, total) => {
 
