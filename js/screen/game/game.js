@@ -1,17 +1,20 @@
 import HeaderView from '../../header-view.js';
-import Layout1View from './layout-1/layout-1-view.js';
+import Layout1View from './layout-1-view.js';
+import Layout2View from './layout-2-view.js';
+import Layout3View from './layout-3-view.js';
 import stat from '../stat/stat.js';
-import {buildFragment, randomSort, changeScreen} from '../../utilites.js';
-import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, MAX_TIME_LIMIT, QUIZ_RESULTS, LAYOUTS} from '../../constants.js';
+import {buildFragment, changeScreen, randomSort, statsLine} from '../../utilites.js';
+import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../constants.js';
 
 const LayoutClasses = {
   layout1: Layout1View,
-  layout2: Layout1View,
-  layout3: Layout1View,
-  layout4: Layout1View
+  layout2: Layout2View,
+  layout3: Layout3View
 };
 
-const generateScreenplay = (layouts, totalSteps) => {
+const generateScreenplay = (totalSteps) => {
+
+  const layouts = Object.keys(LayoutClasses);
 
   let out = [];
   let previousLayout = ``;
@@ -38,11 +41,7 @@ const livesLine = (lives, total) => {
 
 };
 
-const statsLine = (answers, total) => {
-  return answers.map((el) => `<li class="stats__result stats__result--` + el + `"></li>`).join(` `) + [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`).join(` `);
-};
-
-const canContinue = (state) => state.lives;
+const canContinue = (state) => state.lives - 1;
 
 const die = (state) => {
   if (!canContinue(state)) {
@@ -80,10 +79,10 @@ const nextAction = (gameConfig, state, header, quest) => {
       quest.unbind();
       changeScreen(stat(gameConfig, state.answers, state.lives));
     }
+    else {
+      changeScreen(gameUpdate(gameConfig, state));
+    }
   }
-
-  changeScreen(gameUpdate(gameConfig, state));
-
 };
 
 const gameUpdate = (gameConfig, state) => {
@@ -112,7 +111,7 @@ const game = (gameConfig) => {
   let state = Object.assign({}, INITIAL_STATE);
 
   state.answers = [];
-  state.screenplay = generateScreenplay(LAYOUTS, TOTAL_STEPS);
+  state.screenplay = generateScreenplay(TOTAL_STEPS);
   // console.log(`Begin: ` +  JSON.stringify(state));
 
   return gameUpdate(gameConfig, state);

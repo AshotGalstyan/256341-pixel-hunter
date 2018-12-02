@@ -16,7 +16,10 @@ export const QUIZ_RESULTS = {
   dead: {type: `dead`, points: 0}
 };
 
-export const LAYOUTS = [`layout1`, `layout2`, `layout3`, `layout4`];
+export const IMAGE_TYPES = {
+  photo: `photo`,
+  paint: `paint`
+}
 
 export const INITIAL_STATE = Object.freeze({
   step: 0,

@@ -15,8 +15,8 @@ export default class RulesView extends AbstractView {
         </ul>
         <p class="rules__ready">Готовы?</p>
         <form class="rules__form">
-          <input class="rules__input" type="text" placeholder="Ваше Имя" value="${this.playerName}">
-          <button class="rules__button  continue" type="submit"${this.buttonDisabilty}>Go!</button>
+          <input class="rules__input" type="text" placeholder="Ваше Имя">
+          <button class="rules__button  continue" type="submit" disabled>Go!</button>
         </form>
       </section>
       `;

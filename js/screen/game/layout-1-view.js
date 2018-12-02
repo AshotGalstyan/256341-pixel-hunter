@@ -1,7 +1,7 @@
-import AbstractView from '../../../abstract-view.js';
-import {debug, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../../constants.js';
-import {createImage, randomElement, rankingAnswer} from '../../../utilites.js';
-import {IMAGES} from '../../../data/game-data.js';
+import AbstractView from '../../abstract-view.js';
+import {debug, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../constants.js';
+import {createImage, selectImages, rankingAnswer} from '../../utilites.js';
+import {IMAGES} from '../../data/game-data.js';
 
 const getTrueAnswers = (images) => {
   return IMAGES.get(images[0]).type;
@@ -12,7 +12,7 @@ export default class Layout1View extends AbstractView {
   constructor(statistics) {
     super();
     this.title = `Угадай, фото или рисунок?`;
-    this.images = randomElement([...IMAGES.keys()]);
+    this.images = selectImages([...IMAGES.keys()]);
     this.trueAnswers = getTrueAnswers(this.images);
     this._place = {width: 705, height: 455};
     this.statistics = statistics;

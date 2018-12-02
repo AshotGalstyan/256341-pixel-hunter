@@ -8,10 +8,12 @@ export default (gameConfig) => {
   rules.playerName = gameConfig[`playerName`];
 
   rules.onClick = () => {
-    rules.unbind();
+    if (rules.name.value.trim() !== ``) {
+      rules.unbind();
 
-    gameConfig.playerName = rules.name.value.trim();
-    changeScreen(game(gameConfig));
+      gameConfig.playerName = rules.name.value.trim();
+      changeScreen(game(gameConfig));
+    }
   };
 
   rules.onInputName = () => {
