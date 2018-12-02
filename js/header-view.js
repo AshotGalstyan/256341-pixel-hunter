@@ -2,6 +2,7 @@ import AbstractView from './abstract-view.js';
 
 export default class HeaderView extends AbstractView {
   constructor(time = -1, lives = -1) {
+    super();
     this.time = (time ? `<div class="game__timer">` + time + `</div>` : ``);
     this.lives = (lives ? `<div class="game__timer">` + lives + `</div>` : ``);
   }

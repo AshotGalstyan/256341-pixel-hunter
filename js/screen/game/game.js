@@ -3,10 +3,6 @@ import Layout1View from './layout-1/layout-1-view.js';
 import {buildFragment, randomSort, changeScreen} from '../../utilites.js';
 import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, LAYOUTS} from '../../constants.js';
 
-const layoutCases = {Layout1View};
-
-const CurrentLayout = (layout) => layoutCases[layout];
-
 const generateScreenplay = (layouts, totalSteps) => {
 
   let out = [];
@@ -30,18 +26,33 @@ const livesLine = (lives, total) => {
 
   const tmp = Array.from(`0`.repeat(total - lives) + `1`.repeat(lives));
 
-  return tmp.map((el) => template[el]);
+  return tmp.map((el) => template[el]).join(` `);
 
 };
 
 const statsLine = (answers, total) => {
-  return answers.map((el) => `<li class="stats__result stats__result--` + el + `"></li>`) + [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`);
+  return answers.map((el) => `<li class="stats__result stats__result--` + el + `"></li>`) + [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`).join(` `);
 };
 
 const gameUpdate = (gameConfig, state) => {
 
   const header = new HeaderView(state.currentStepTime, livesLine(state.lives, MAX_LIVES));
-  const quest = new CurrentLayout(state.screenplay[state.step])(statsLine(state.answers, TOTAL_STEPS));
+
+  let quest;
+  switch (state.screenplay[state.step]) {
+    case `layout-1`:
+      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
+      break;
+    case `layout-2`:
+      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
+      break;
+    case `layout-3`:
+      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
+      break;
+    default:
+      quest = new Layout1View(statsLine(state.answers, TOTAL_STEPS));
+  }
+
 
   header.onClick = () => {
     header.unbind();
