@@ -53,7 +53,7 @@ export default class Layout2View extends AbstractView {
 
   get result() {
 
-    if ( this.answerTime > MAX_TIME_LIMIT) {
+    if (this.answerTime > MAX_TIME_LIMIT) {
       return QUIZ_RESULTS.dead.type;
     }
 

@@ -4,8 +4,8 @@ import {MAX_TIME_LIMIT} from './constants.js';
 export default class HeaderView extends AbstractView {
   constructor(time = -1, lives = -1) {
     super();
-    this.time = (time != -1 ? `<div class="game__timer">` + (time > MAX_TIME_LIMIT ? `<span style="color: #DE4D51;">` + time + `</style>` : time) + `</div>` : ``);
-    this.lives = (lives != -1 ? `<div class="game__timer">` + lives + `</div>` : ``);
+    this.time = (time !== -1 ? `<div class="game__timer">` + (time > MAX_TIME_LIMIT ? `<span style="color: #DE4D51;">` + time + `</style>` : time) + `</div>` : ``);
+    this.lives = (lives !== -1 ? `<div class="game__timer">` + lives + `</div>` : ``);
   }
 
   get template() {

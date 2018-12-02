@@ -19,7 +19,7 @@ export const QUIZ_RESULTS = {
 export const IMAGE_TYPES = {
   photo: `photo`,
   paint: `paint`
-}
+};
 
 export const INITIAL_STATE = Object.freeze({
   step: 0,

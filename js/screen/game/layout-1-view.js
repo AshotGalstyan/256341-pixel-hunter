@@ -42,7 +42,7 @@ export default class Layout1View extends AbstractView {
 
   get result() {
 
-    if ( this.answerTime > MAX_TIME_LIMIT) {
+    if (this.answerTime > MAX_TIME_LIMIT) {
       return QUIZ_RESULTS.dead.type;
     }
     const selectedType = this.element.querySelector(`input[type="radio"]:checked`).value;

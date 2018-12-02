@@ -78,8 +78,7 @@ const nextAction = (gameConfig, state, header, quest) => {
       header.unbind();
       quest.unbind();
       changeScreen(stat(gameConfig, state.answers, state.lives));
-    }
-    else {
+    } else {
       changeScreen(gameUpdate(gameConfig, state));
     }
   }
