@@ -1,9 +1,9 @@
 import AbstractView from '../../abstract-view.js';
 import {debug, MAX_TIME_LIMIT, QUIZ_RESULTS, IMAGE_TYPES} from '../../constants.js';
-import {createImage, selectImagesPhotoPaint, rankingAnswer, randomSort} from '../../utilites.js';
+import {createImage, selectImagesPhotoPaint, rankingAnswer, compareRandom} from '../../utilites.js';
 import {IMAGES} from '../../data/game-data.js';
 
-const getTrueAnswers = (images, type) => {
+const getTrueAnswer = (images, type) => {
   return images.filter((el) => IMAGES.get(el).type === type)[0];
 };
 
@@ -12,20 +12,15 @@ export default class Layout3View extends AbstractView {
   constructor(statistics) {
     super();
 
-    if (randomSort() > 0) {
+    if (compareRandom() > 0) {
       this.title = `Найдите рисунок среди изображений`;
       this.images = selectImagesPhotoPaint([...IMAGES.keys()], 2, 1);
-      this.trueAnswers = getTrueAnswers(this.images, IMAGE_TYPES.paint);
+      this.trueAnswer = getTrueAnswer(this.images, IMAGE_TYPES.paint);
     } else {
       this.title = `Найдите фото среди изображений`;
       this.images = selectImagesPhotoPaint([...IMAGES.keys()], 1, 2);
-      this.trueAnswers = getTrueAnswers(this.images, IMAGE_TYPES.photo);
+      this.trueAnswer = getTrueAnswer(this.images, IMAGE_TYPES.photo);
     }
-    /*
-    this.title = `Найдите рисунок среди изображений`;
-    this.images = selectImagesPhotoPaint([...IMAGES.keys()], 2, 1);
-    this.trueAnswers = getTrueAnswers(this.images, IMAGE_TYPES.paint);
-    */
     this._place = {width: 304, height: 455};
     this.statistics = statistics;
   }
@@ -65,7 +60,7 @@ export default class Layout3View extends AbstractView {
       return QUIZ_RESULTS.dead.type;
     }
     const selectedImage = this.element.querySelector(`input[type="radio"]:checked`).value;
-    if (selectedImage !== this.trueAnswers) {
+    if (selectedImage !== this.trueAnswer) {
       return QUIZ_RESULTS.wrong.type;
     }
     return rankingAnswer(this.answerTime);

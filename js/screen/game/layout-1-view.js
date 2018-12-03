@@ -3,7 +3,7 @@ import {debug, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../constants.js';
 import {createImage, selectImages, rankingAnswer} from '../../utilites.js';
 import {IMAGES} from '../../data/game-data.js';
 
-const getTrueAnswers = (images) => {
+const getTrueAnswer = (images) => {
   return IMAGES.get(images[0]).type;
 };
 
@@ -13,7 +13,7 @@ export default class Layout1View extends AbstractView {
     super();
     this.title = `Угадай, фото или рисунок?`;
     this.images = selectImages([...IMAGES.keys()]);
-    this.trueAnswers = getTrueAnswers(this.images);
+    this.trueAnswer = getTrueAnswer(this.images);
     this._place = {width: 705, height: 455};
     this.statistics = statistics;
   }
@@ -46,7 +46,7 @@ export default class Layout1View extends AbstractView {
       return QUIZ_RESULTS.dead.type;
     }
     const selectedType = this.element.querySelector(`input[type="radio"]:checked`).value;
-    if (selectedType !== this.trueAnswers) {
+    if (selectedType !== this.trueAnswer) {
       return QUIZ_RESULTS.wrong.type;
     }
     return rankingAnswer(this.answerTime);

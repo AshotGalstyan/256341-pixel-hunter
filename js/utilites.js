@@ -2,7 +2,7 @@ import {resize} from './data/resize.js';
 import {IMAGES} from './data/game-data.js';
 import {SLOW_LIMIT, FAST_LIMIT, QUIZ_RESULTS} from './constants.js';
 
-export const randomSort = () => 0.5 - Math.random();
+export const compareRandom = () => 0.5 - Math.random();
 
 export const createImage = (src, alt, title, holderSize, imageSize) => {
 
@@ -34,20 +34,12 @@ export const showCurrentState = (answers, total) => {
 
 };
 
-export const randomElement = (fromArray = [], n = 1) => {
-
-  if (fromArray.length === 0) {
-    return [];
-  }
-  return fromArray.sort(randomSort()).slice(0, n);
-};
-
-export const selectImages = (source, total = 1) => source.sort(() => randomSort()).slice(0, total);
+export const selectImages = (source, total = 1) => source.sort(() => compareRandom()).slice(0, total);
 
 export const selectImagesPhotoPaint = (source, photo = 1, paint = 1) => {
-  const randomPhotos = source.filter((el) => IMAGES.get(el).type === `photo`).sort(() => randomSort());
-  const randomPaints = source.filter((el) => IMAGES.get(el).type === `paint`).sort(() => randomSort());
-  return randomPhotos.slice(randomPhotos.length - photo).concat(randomPaints.slice(randomPaints.length - paint)).sort(() => randomSort());
+  const randomPhotos = source.filter((el) => IMAGES.get(el).type === `photo`).sort(() => compareRandom());
+  const randomPaints = source.filter((el) => IMAGES.get(el).type === `paint`).sort(() => compareRandom());
+  return randomPhotos.slice(randomPhotos.length - photo).concat(randomPaints.slice(randomPaints.length - paint)).sort(() => compareRandom());
 };
 
 export const statsLine = (answers, total = 0) => {

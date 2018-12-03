@@ -3,7 +3,7 @@ import Layout1View from './layout-1-view.js';
 import Layout2View from './layout-2-view.js';
 import Layout3View from './layout-3-view.js';
 import stat from '../stat/stat.js';
-import {buildFragment, changeScreen, randomSort, statsLine} from '../../utilites.js';
+import {buildFragment, changeScreen, compareRandom, statsLine} from '../../utilites.js';
 import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../constants.js';
 
 const LayoutClasses = {
@@ -16,12 +16,12 @@ const generateScreenplay = (totalSteps) => {
 
   const layouts = Object.keys(LayoutClasses);
 
-  let out = [];
+  const out = [];
   let previousLayout = ``;
 
   for (let i = 0; i < totalSteps; i++) {
     const candidates = layouts.filter((el) => el !== previousLayout);
-    const layout = (candidates.length === 0 ? previousLayout : candidates.sort(() => randomSort())[0]);
+    const layout = (candidates.length === 0 ? previousLayout : candidates.sort(() => compareRandom())[0]);
     previousLayout = layout;
     out.push(layout);
   }
@@ -86,6 +86,7 @@ const nextAction = (gameConfig, state, header, quest) => {
 
 const gameUpdate = (gameConfig, state) => {
 
+  // Workaround - simulate a timer
   state.currentStepTime = Math.floor(Math.random() * 40) + 1;
 
   const header = new HeaderView(state.currentStepTime, livesLine(state.lives, MAX_LIVES));
@@ -107,7 +108,7 @@ const gameUpdate = (gameConfig, state) => {
 
 const game = (gameConfig) => {
 
-  let state = Object.assign({}, INITIAL_STATE);
+  const state = Object.assign({}, INITIAL_STATE);
 
   state.answers = [];
   state.screenplay = generateScreenplay(TOTAL_STEPS);

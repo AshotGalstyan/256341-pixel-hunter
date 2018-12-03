@@ -2,9 +2,7 @@ import GreetingView from './greeting-view.js';
 import {changeScreen} from '../../utilites.js';
 import rules from '../rules/rules.js';
 
-const greetingScreen = (gameConfig) => {
-
-  gameConfig = gameConfig || {};
+const greetingScreen = (gameConfig = {}) => {
 
   if (!(`beginPoint` in gameConfig)) {
     gameConfig.beginPoint = greetingScreen;
