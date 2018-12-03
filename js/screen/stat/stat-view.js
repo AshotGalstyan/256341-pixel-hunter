@@ -1,8 +1,7 @@
-import {showCurrentState, changeScreen, render} from './utilites.js';
-import {showHeader} from './header.js';
-import {handleBackButton} from './back-button.js';
-import {ANSWER_TO_POINT_MAP, LIVES_TO_POINT, TOTAL_STEPS} from './data/data.js';
-import {ARCHIVE} from './data/game-data.js';
+import AbstractView from '../../abstract-view.js';
+import {statsLine} from '../../utilites.js';
+import {ARCHIVE} from '../../data/game-data.js';
+import {TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS} from '../../constants.js';
 
 const getScore = (answers, lives) => {
 
@@ -11,8 +10,8 @@ const getScore = (answers, lives) => {
     return acc;
   }, {});
 
-  for (const key in ANSWER_TO_POINT_MAP) {
-    if (!score.hasOwnProperty(key)) {
+  for (const key in QUIZ_RESULTS) {
+    if (key !== QUIZ_RESULTS.incompleate.type && !score.hasOwnProperty(key)) {
       score[key] = 0;
     }
   }
@@ -20,7 +19,7 @@ const getScore = (answers, lives) => {
   let total = 0;
   for (const key in score) {
     if (score.hasOwnProperty(key)) {
-      total += score[key] * ANSWER_TO_POINT_MAP[key];
+      total += score[key] * QUIZ_RESULTS[key].points;
     }
   }
   score.total = total + lives * LIVES_TO_POINT;
@@ -40,7 +39,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
           <td class="result__number">${currNumber}.</td>
           <td colspan="2">`;
 
-  template += `<ul class="stats">` + showCurrentState(answers, answers.length) + `</ul>`;
+  template += `<ul class="stats">` + statsLine(answers) + `</ul>`;
 
   template += `
         </td>`;
@@ -58,7 +57,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
     template += `
           <td class="result__points">× 100</td>
-          <td class="result__total">${(currentScore.correct + currentScore.fast + currentScore.slow) * ANSWER_TO_POINT_MAP.correct}</td>
+          <td class="result__total">${(currentScore.correct + currentScore.fast + currentScore.slow) * QUIZ_RESULTS.correct.points}</td>
         </tr>`;
 
     if (currentScore.fast > 0) {
@@ -68,7 +67,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
         <td class="result__extra">Бонус за скорость:</td>
         <td class="result__extra">${currentScore.fast} <span class="stats__result stats__result--fast"></span></td>
         <td class="result__points">× 50</td>
-        <td class="result__total">${currentScore.fast * (ANSWER_TO_POINT_MAP.fast - ANSWER_TO_POINT_MAP.correct)}</td>
+        <td class="result__total">${currentScore.fast * (QUIZ_RESULTS.fast.points - QUIZ_RESULTS.correct.points)}</td>
       </tr>
       `;
     }
@@ -92,7 +91,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
         <td class="result__extra">Штраф за медлительность:</td>
         <td class="result__extra">${currentScore.slow} <span class="stats__result stats__result--slow"></span></td>
         <td class="result__points">× 50</td>
-        <td class="result__total">${currentScore.slow * (ANSWER_TO_POINT_MAP.slow - ANSWER_TO_POINT_MAP.correct)}</td>
+        <td class="result__total">${currentScore.slow * (QUIZ_RESULTS.slow.points - QUIZ_RESULTS.correct.points)}</td>
       </tr>
       `;
     }
@@ -108,25 +107,35 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
 };
 
-export const showStats = (game, backButtonRender) => {
 
-  let template = `${showHeader()}
-  <section class="result">
-    <h2 class="result__title">${game.answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`}</h2>
-    ${showCurrentScore(1, game.answers, game.lives)}`;
+const getStatistics = (answers, lives, archive) => {
 
-  for (let i = 0; i < ARCHIVE.length; i++) {
-    template += showCurrentScore(i + 2, ARCHIVE[i].answers, ARCHIVE[i].lives);
+  let template = showCurrentScore(1, answers, lives);
+
+  for (let i = 0; i < archive.length; i++) {
+    template += showCurrentScore(i + 2, archive[i].answers, archive[i].lives);
   }
 
-  template += `
-  </section>
-  `;
-
-  const element = render(template);
-
-  handleBackButton(element, backButtonRender);
-
-  changeScreen(element);
+  return template;
 
 };
+
+
+export default class Layout1View extends AbstractView {
+
+  constructor(name, answers, lives) {
+    super();
+    this.name = name;
+    this.title = (answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`);
+    this.statistics = getStatistics(answers, lives, ARCHIVE);
+    this.lives = lives;
+  }
+  get template() {
+    return `
+      <section class="result">
+        <h2 class="result__title">${this.title}</h2>
+        ${this.statistics}
+      </section>
+      `;
+  }
+}

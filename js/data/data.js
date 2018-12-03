@@ -67,7 +67,7 @@ export const LAYOUTS = new Map([
   ]
 ]);
 
-export const INITIAL_GAME = Object.freeze({
+export const INITIAL_STATE = Object.freeze({
   step: 0,
   lives: MAX_LIVES,
   currentStepTime: MAX_TIME_LIMIT
