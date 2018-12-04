@@ -12,6 +12,9 @@ export const createImage = (src, alt, title, holderSize, imageSize) => {
 
 };
 
+export const getTrueAnswer = (images, type) => {
+  return images.filter((el) => IMAGES.get(el).type === type)[0];
+};
 export const rankingAnswer = (time) => {
 
   if (time > SLOW_LIMIT) {

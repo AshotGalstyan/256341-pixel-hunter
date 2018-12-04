@@ -2,6 +2,7 @@ import HeaderView from '../../header-view.js';
 import Layout1View from './layout-1-view.js';
 import Layout2View from './layout-2-view.js';
 import Layout3View from './layout-3-view.js';
+import Layout4View from './layout-4-view.js';
 import stat from '../stat/stat.js';
 import {buildFragment, changeScreen, compareRandom, statsLine} from '../../utilites.js';
 import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../constants.js';
@@ -9,7 +10,8 @@ import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, MAX_TIME_LIMIT, QUIZ_RESULTS} fro
 const LayoutClasses = {
   layout1: Layout1View,
   layout2: Layout2View,
-  layout3: Layout3View
+  layout3: Layout3View,
+  layout4: Layout4View
 };
 
 const generateScreenplay = (totalSteps) => {
