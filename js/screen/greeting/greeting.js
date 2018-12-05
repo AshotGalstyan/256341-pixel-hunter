@@ -1,23 +1,14 @@
 import GreetingView from './greeting-view.js';
-import {changeScreen} from '../../utilites.js';
-import rules from '../rules/rules.js';
+import {changeScreen} from '../../common/utilites.js';
 
-const greetingScreen = (gameConfig = {}) => {
-
-  if (!(`beginPoint` in gameConfig)) {
-    gameConfig.beginPoint = greetingScreen;
-  }
-  if (!(`playerName` in gameConfig)) {
-    gameConfig.playerName = ``;
-  }
+export default (router) => {
 
   const greeting = new GreetingView();
+
   greeting.onClick = () => {
     greeting.unbind();
-    changeScreen(rules(gameConfig));
+    router.showRules();
   };
 
   return greeting.element;
 };
-
-export {greetingScreen as default};

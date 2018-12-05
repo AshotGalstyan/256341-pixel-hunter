@@ -1,83 +1,65 @@
-export const debug = true;
-
-export const MAX_LIVES = 3;
-export const TOTAL_STEPS = 10;
-export const MAX_TIME_LIMIT = 30;
-export const LIVES_TO_POINT = 50;
-export const FAST_LIMIT = 10;
-export const SLOW_LIMIT = 20;
-
-// Add new state "dead" for wrong answer by Time limit
-export const ANSWER_TO_POINT_MAP = {
-  correct: 100,
-  fast: 150,
-  slow: 50,
-  wrong: 0,
-  dead: 0
-};
-
-export const LAYOUTS = new Map([
+export const IMAGES = new Map([
   [
-    `2 Columns`,
+    `https://k42.kn3.net/CF42609C8.jpg`,
     {
-      title: `Угадайте для каждого изображения фото или рисунок?`,
-      totalImages: 2,
-      mandatory: ``,
-      answersCount: 2,
-      selectionWay: `image2type`,
+      type: `photo`,
+      width: 600,
+      height: 831
+    }
+  ],
+  [
+    `https://i.imgur.com/DiHM5Zb.jpg`,
+    {
+      type: `photo`,
+      width: 1264,
+      height: 1864
+    }
+  ],
+  [
+    `https://k32.kn3.net/5C7060EC5.jpg`,
+    {
+      type: `photo`,
+      width: 1200,
+      height: 900
+    }
+  ],
+  [
+    `https://k42.kn3.net/D2F0370D6.jpg`,
+    {
+      type: `paint`,
       width: 468,
-      height: 458
+      height: 354
     }
   ],
   [
-    `1 Columns`,
+    `http://i.imgur.com/1KegWPz.jpg`,
     {
-      title: `Угадай, фото или рисунок?`,
-      totalImages: 1,
-      mandatory: ``,
-      answersCount: 1,
-      selectionWay: `image2type`,
-      width: 705,
-      height: 455
+      type: `paint`,
+      width: 1080,
+      height: 720
     }
   ],
   [
-    `3 Columns with photo`,
+    `http://i.imgur.com/DKR1HtB.jpg`,
     {
-      title: `Найдите фото среди изображений`,
-      totalImages: 3,
-      mandatory: `photo`,
-      answersCount: 1,
-      selectionWay: `type2image`,
-      width: 304,
-      height: 455
-    }
-  ],
-  [
-    `3 Columns with paint`,
-    {
-      title: `Найдите рисунок среди изображений`,
-      totalImages: 3,
-      mandatory: `paint`,
-      answersCount: 1,
-      selectionWay: `type2image`,
-      width: 304,
-      height: 455
+      type: `paint`,
+      width: 1120,
+      height: 2965
     }
   ]
 ]);
 
-export const INITIAL_STATE = Object.freeze({
-  step: 0,
-  lives: MAX_LIVES,
-  currentStepTime: MAX_TIME_LIMIT
-});
-
-
-export const changeTime = (game) => {
-
-  const newGame = Object.assign({}, game, {currentStepTime: game.currentStepTime--});
-
-  return newGame;
-
-};
+export const ARCHIVE = [
+  {
+    lives: 1,
+    answers: [`wrong`, `slow`, `wrong`, `slow`, `correct`, `slow`, `wrong`]
+  },
+  {
+    lives: 2,
+    answers: [`slow`, `correct`, `correct`, `slow`, `wrong`, `wrong`, `correct`, `wrong`, `correct`, `wrong`]
+  },
+  {
+    lives: 3,
+    answers: [`fast`, `wrong`, `slow`, `wrong`, `slow`, `correct`, `slow`, `wrong`, `fast`, `slow`]
+  }
+];

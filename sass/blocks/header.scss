@@ -54,3 +54,22 @@
     background-color: $main-black-color;
   }
 }
+
+
+/* Add new style for danger Time*/
+.dangertime {
+  color: $main-red-color;
+  animation: blink 0.5s linear infinite;
+}
+
+@keyframes blink {
+  100% {
+    color: rgba(34, 34, 34, 0);
+  }
+}
+
+@keyframes blink {
+  100% {
+    color: rgba(34, 34, 34, 0);
+  }
+}

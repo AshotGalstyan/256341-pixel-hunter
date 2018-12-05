@@ -1,4 +1,4 @@
-import AbstractView from '../../abstract-view.js';
+import AbstractView from '../../common/abstract-view.js';
 
 export default class GreetingView extends AbstractView {
   get template() {

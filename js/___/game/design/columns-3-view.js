@@ -21,21 +21,21 @@ export default class Design3View extends AbstractView {
       <section class="game">
         <p class="game__task">${this.title}</p>
         <form class="game__content  game__content--triple">
-          <div class="game__option">
+          <div class="game__option"${(debug ? ` data-type="&nbsp;` + IMAGES.get(this.images[0]).type + `&nbsp;"` : ``)}>
             <label>
-              ${createImage(this.images[0], `Option 1`, (debug ? IMAGES.get(this.images[0]).type : ``), this._place, {width: IMAGES.get(this.images[0]).width, height: IMAGES.get(this.images[0]).height})}
+              ${createImage(this.images[0], `Option 1`, this._place, {width: IMAGES.get(this.images[0]).width, height: IMAGES.get(this.images[0]).height})}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[0]}">
             </label>
           </div>
-          <div class="game__option  game__option--selected">
+          <div class="game__option"${(debug ? ` data-type="&nbsp;` + IMAGES.get(this.images[1]).type + `&nbsp;"` : ``)}>
             <label>
-              ${createImage(this.images[1], `Option 2`, (debug ? IMAGES.get(this.images[1]).type : ``), this._place, {width: IMAGES.get(this.images[1]).width, height: IMAGES.get(this.images[1]).height})}
+              ${createImage(this.images[1], `Option 2`, this._place, {width: IMAGES.get(this.images[1]).width, height: IMAGES.get(this.images[1]).height})}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[1]}">
             </label>
           </div>
-          <div class="game__option">
+          <div class="game__option"${(debug ? ` data-type="&nbsp;` + IMAGES.get(this.images[2]).type + `&nbsp;"` : ``)}>
             <label>
-              ${createImage(this.images[2], `Option 3`, (debug ? IMAGES.get(this.images[2]).type : ``), this._place, {width: IMAGES.get(this.images[2]).width, height: IMAGES.get(this.images[2]).height})}
+              ${createImage(this.images[2], `Option 3`, this._place, {width: IMAGES.get(this.images[2]).width, height: IMAGES.get(this.images[2]).height})}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[2]}">
             </label>
           </div>

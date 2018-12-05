@@ -4,11 +4,11 @@ import {SLOW_LIMIT, FAST_LIMIT, QUIZ_RESULTS} from './constants.js';
 
 export const compareRandom = () => 0.5 - Math.random();
 
-export const createImage = (src, alt, title, holderSize, imageSize) => {
+export const createImage = (src, alt, holderSize, imageSize) => {
 
   const size = resize(holderSize, imageSize);
 
-  return `<img src="${src}" alt="${alt}" width="${size.width}" height="${size.height}" ${(title.length > 0 ? `title="` + title + `"` : ``)}>`;
+  return `<img src="${src}" alt="${alt}" width="${size.width}" height="${size.height}">`;
 
 };
 

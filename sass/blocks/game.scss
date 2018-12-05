@@ -153,3 +153,18 @@
     border-color: $link-active-color;
   }
 }
+
+/* Added for debug */
+.game__option::after {
+  content: attr(data-type);
+  width: 100px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 30px;
+  line-height: 38px;
+  text-align: center;
+  color: #de4d51;
+  background-color: rgba(120, 120, 120, 0.3);
+}

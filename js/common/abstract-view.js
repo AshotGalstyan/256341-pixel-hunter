@@ -1,11 +1,4 @@
 import {render} from './utilites.js';
-/*
-const render = (content) => {
-  const wrapper = document.createElement(`div`);
-  wrapper.innerHTML = content.trim();
-  return wrapper;
-};
-*/
 
 class AbstractView {
   constructor() {
