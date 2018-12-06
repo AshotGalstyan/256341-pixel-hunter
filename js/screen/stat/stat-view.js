@@ -1,6 +1,6 @@
 import AbstractView from '../../common/abstract-view.js';
 import {statsLine} from '../../common/utilites.js';
-import {TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS} from '../../common/constants.js';
+import {TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS, STAT_INFO, TOTAL_TITLE_FOR_FAILED} from '../../common/constants.js';
 import {ARCHIVE} from '../../data/data.js';
 
 const getScore = (answers, lives) => {
@@ -33,77 +33,46 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
   const currentScore = getScore(answers, lives);
 
-  let template = `
-  <table class="result__table">
-        <tr>
-          <td class="result__number">${currNumber}.</td>
-          <td colspan="2">`;
-
-  template += `<ul class="stats">` + statsLine(answers) + `</ul>`;
-
-  template += `
-        </td>`;
-
-  if (answers.length < TOTAL_STEPS) {
-
-    template += `
-        <td class="result__total"></td>
-        <td class="result__total  result__total--final">fail</td>
-      </tr>
-    </table>
-    `;
-
-  } else {
-
-    template += `
-          <td class="result__points">× 100</td>
-          <td class="result__total">${(currentScore.correct + currentScore.fast + currentScore.slow) * QUIZ_RESULTS.correct.points}</td>
-        </tr>`;
-
-    if (currentScore.fast > 0) {
-      template += `
+  const statBody = (answers.length < TOTAL_STEPS ?
+    (`
       <tr>
-        <td></td>
-        <td class="result__extra">Бонус за скорость:</td>
-        <td class="result__extra">${currentScore.fast} <span class="stats__result stats__result--fast"></span></td>
-        <td class="result__points">× 50</td>
-        <td class="result__total">${currentScore.fast * (QUIZ_RESULTS.fast.points - QUIZ_RESULTS.correct.points)}</td>
+        <td class="result__number">${currNumber}</td>
+        <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
+        <td class="result__points"></td>
+        <td class="result__total  result__total--final">${TOTAL_TITLE_FOR_FAILED}</td>
       </tr>
-      `;
-    }
+      `) :
+    (
+      Object.keys(STAT_INFO).map((key) => {
+        if (key === `correct`) {
+          return `
+          <tr>
+            <td class="result__number">${currNumber}.</td>
+            <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
+            <td class="result__points">× ${STAT_INFO[key].bonus}</td>
+            <td class="result__total">${(currentScore[key] + currentScore[QUIZ_RESULTS.fast.type] + currentScore[QUIZ_RESULTS.slow.type]) * STAT_INFO[key].bonus}</td>
+          </tr>
+          `;
+        } else if (key !== `total`) {
+          return `
+          <tr>
+          <td></td>
+            <td class="result__extra">${STAT_INFO[key].title}</td>
+            <td class="result__extra">${currentScore[key]} <span class="stats__result stats__result--${key}"></span></td>
+            <td class="result__points">× ${Math.abs(STAT_INFO[key].bonus)}</td>
+            <td class="result__total">${currentScore[key] * STAT_INFO[key].bonus}</td>
+          </tr>
+          `;
+        }
+        return `
+          <tr><td colspan="5" class="result__total  result__total--final">${currentScore[key]}</td></tr>
+          `;
 
-    if (currentScore.lives > 0) {
-      template += `
-      <tr>
-        <td></td>
-        <td class="result__extra">Бонус за жизни:</td>
-        <td class="result__extra">${currentScore.lives} <span class="stats__result stats__result--alive"></span></td>
-        <td class="result__points">× 50</td>
-        <td class="result__total">${(currentScore.lives * LIVES_TO_POINT)}</td>
-      </tr>
-      `;
-    }
+      }).join(``)
+    )
+  );
 
-    if (currentScore.slow > 0) {
-      template += `
-      <tr>
-        <td></td>
-        <td class="result__extra">Штраф за медлительность:</td>
-        <td class="result__extra">${currentScore.slow} <span class="stats__result stats__result--slow"></span></td>
-        <td class="result__points">× 50</td>
-        <td class="result__total">${currentScore.slow * (QUIZ_RESULTS.slow.points - QUIZ_RESULTS.correct.points)}</td>
-      </tr>
-      `;
-    }
-
-    template += `
-      <tr>
-        <td colspan="5" class="result__total  result__total--final">${currentScore.total}</td>
-      </tr>
-    </table>`;
-  }
-
-  return template;
+  return `<table class="result__table"><tr>${statBody}</tr></table>`;
 
 };
 

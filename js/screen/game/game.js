@@ -141,6 +141,7 @@ export default class gameScreen {
         this.updateHeader();
         this.start();
       } else {
+        this.reset();
         this.header.unbind();
         this.quest.unbind();
         this.router.showStat(this.model.getAnswers(), this.model.getCurrentLives());
