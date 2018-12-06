@@ -1,7 +1,7 @@
-import AbstractView from '../../../abstract-view.js';
-import {debug, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../../constants.js';
-import {createImage, rankingAnswer} from '../../../utilites.js';
-import {IMAGES} from '../../../data/game-data.js';
+import AbstractView from '../../../common/abstract-view.js';
+import {DEBUG, QUIZ_RESULTS} from '../../../common/constants.js';
+import {createImage} from '../../../common/utilites.js';
+import {IMAGES} from '../../../data/data.js';
 
 export default class Design3View extends AbstractView {
 
@@ -21,19 +21,19 @@ export default class Design3View extends AbstractView {
       <section class="game">
         <p class="game__task">${this.title}</p>
         <form class="game__content  game__content--triple">
-          <div class="game__option"${(debug ? ` data-type="&nbsp;` + IMAGES.get(this.images[0]).type + `&nbsp;"` : ``)}>
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + IMAGES.get(this.images[0]).type + `&nbsp;"` : ``)}>
             <label>
               ${createImage(this.images[0], `Option 1`, this._place, {width: IMAGES.get(this.images[0]).width, height: IMAGES.get(this.images[0]).height})}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[0]}">
             </label>
           </div>
-          <div class="game__option"${(debug ? ` data-type="&nbsp;` + IMAGES.get(this.images[1]).type + `&nbsp;"` : ``)}>
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + IMAGES.get(this.images[1]).type + `&nbsp;"` : ``)}>
             <label>
               ${createImage(this.images[1], `Option 2`, this._place, {width: IMAGES.get(this.images[1]).width, height: IMAGES.get(this.images[1]).height})}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[1]}">
             </label>
           </div>
-          <div class="game__option"${(debug ? ` data-type="&nbsp;` + IMAGES.get(this.images[2]).type + `&nbsp;"` : ``)}>
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + IMAGES.get(this.images[2]).type + `&nbsp;"` : ``)}>
             <label>
               ${createImage(this.images[2], `Option 3`, this._place, {width: IMAGES.get(this.images[2]).width, height: IMAGES.get(this.images[2]).height})}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[2]}">
@@ -46,15 +46,11 @@ export default class Design3View extends AbstractView {
   }
 
   get result() {
-
-    if (this.answerTime > MAX_TIME_LIMIT) {
-      return QUIZ_RESULTS.dead.type;
-    }
     const selectedImage = this.element.querySelector(`input[type="radio"]:checked`).value;
     if (selectedImage !== this.trueAnswer) {
       return QUIZ_RESULTS.wrong.type;
     }
-    return rankingAnswer(this.answerTime);
+    return QUIZ_RESULTS.correct.type;
   }
 
   bind() {

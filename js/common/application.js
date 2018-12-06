@@ -8,32 +8,34 @@ import GameScreen from '../screen/game/game.js';
 
 import {ARCHIVE} from '../data/data.js';
 
+const mainElement = document.querySelector(`#main`);
+
 export default class Application {
 
   static showIntro() {
     const intro = introScreen(this);
-    changeScreen(intro);
+    changeScreen(mainElement, intro);
   }
 
   static showGreeting() {
     const greeting = greetingScreen(this);
-    changeScreen(greeting);
+    changeScreen(mainElement, greeting);
   }
 
   static showRules() {
     const rules = rulesScreen(this);
-    changeScreen(rules);
+    changeScreen(mainElement, rules);
   }
 
   static showGame(playerName) {
     const model = new GameModel(playerName);
     const game = new GameScreen(this, model);
 
-    changeScreen(game.element);
+    changeScreen(mainElement, game.element);
   }
 
   static showStat(answers, lives) {
     const stat = statScreen(this, answers, lives, ARCHIVE);
-    changeScreen(stat);
+    changeScreen(mainElement, stat);
   }
 }

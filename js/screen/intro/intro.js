@@ -1,5 +1,4 @@
 import IntroView from './intro-view.js';
-import {changeScreen} from '../../common/utilites.js';
 
 export default (router) => {
 

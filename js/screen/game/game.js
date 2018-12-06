@@ -6,14 +6,24 @@ import Layout2View from './layout-2-view.js';
 import Layout3View from './layout-3-view.js';
 import Layout4View from './layout-4-view.js';
 
-import {compareRandom, rankingAnswer} from "../../common/utilites.js";
-import {MAX_TIME_LIMIT, MAX_LIVES, TOTAL_STEPS, QUIZ_RESULTS, CRITICAL_TIME} from '../../common/constants.js';
+import {compareRandom, statsLine} from "../../common/utilites.js";
+import {MAX_TIME_LIMIT, MAX_LIVES, TOTAL_STEPS, QUIZ_RESULTS, CRITICAL_TIME, SLOW_LIMIT, FAST_LIMIT} from '../../common/constants.js';
 
 const LayoutClasses = {
   layout1: Layout1View,
   layout2: Layout2View,
   layout3: Layout3View,
   layout4: Layout4View
+};
+
+const rankingAnswer = (answer, time) => {
+
+  if (time > FAST_LIMIT && answer === QUIZ_RESULTS.correct.type) {
+    return QUIZ_RESULTS.fast.type;
+  } else if (time < SLOW_LIMIT && answer === QUIZ_RESULTS.correct.type) {
+    return QUIZ_RESULTS.slow.type;
+  }
+  return answer;
 };
 
 const livesLine = (lives, total) => {
@@ -58,7 +68,7 @@ export default class gameScreen {
     this.root = document.createElement(`div`);
 
     this.updateHeader();
-    this.updateContent();
+    this.updateQuest();
 
     this.root.appendChild(this.header.element);
     this.root.appendChild(this.quest.element);
@@ -103,8 +113,12 @@ export default class gameScreen {
     this.header = header;
   }
 
-  updateContent() {
-    const quest = new LayoutClasses[this.screenplay[this.model.getCurrentStep()]]();
+  updateQuest() {
+    const quest = new LayoutClasses[this.screenplay[this.model.getCurrentStep()]](statsLine(this.model.answers, TOTAL_STEPS));
+
+    quest.onFinishQuest = () => {
+      this.answer(this.quest.result);
+    };
 
     if (this.quest) {
       this.root.replaceChild(quest.element, this.quest.element);
@@ -113,23 +127,24 @@ export default class gameScreen {
   }
 
   answer(result) {
-    if (result === QUIZ_RESULTS.dead.type) {
-      this.model.die();
-      this.model.addAnswer(result);
-    } else {
-      this.model.addAnswer(rankingAnswer(this.timer.getTime()));
-    }
 
-    this.model.nextStep();
+    if (result !== QUIZ_RESULTS.incompleate.type) {
+      if (result === QUIZ_RESULTS.dead.type) {
+        this.model.die();
+        this.model.addAnswer(result);
+      } else {
+        this.model.addAnswer(rankingAnswer(result, this.timer.getTime()));
+      }
 
-    if (this.model.canContinue()) {
-      this.updateContent();
-      this.updateHeader();
-      this.start();
-    } else {
-      this.header.unbind();
-      this.quest.unbind();
-      this.router.showStat(this.model.getAnswers(), this.model.getCurrentLives());
+      if (this.model.canContinue()) {
+        this.updateQuest();
+        this.updateHeader();
+        this.start();
+      } else {
+        this.header.unbind();
+        this.quest.unbind();
+        this.router.showStat(this.model.getAnswers(), this.model.getCurrentLives());
+      }
     }
   }
 }

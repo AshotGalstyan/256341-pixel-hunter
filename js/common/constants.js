@@ -2,10 +2,10 @@ export const DEBUG = true;
 
 export const MAX_LIVES = 3;
 export const TOTAL_STEPS = 10;
-export const MAX_TIME_LIMIT = 10;     // Temporary !!!! 30
+export const MAX_TIME_LIMIT = 30;
 export const LIVES_TO_POINT = 50;
-export const FAST_LIMIT = 10;
-export const SLOW_LIMIT = 20;
+export const FAST_LIMIT = 20;
+export const SLOW_LIMIT = 10;
 export const CRITICAL_TIME = 5;
 
 export const QUIZ_RESULTS = {

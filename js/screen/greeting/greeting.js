@@ -1,5 +1,4 @@
 import GreetingView from './greeting-view.js';
-import {changeScreen} from '../../common/utilites.js';
 
 export default (router) => {
 

@@ -23,7 +23,7 @@ export default class GameModel {
   }
 
   nextStep() {
-    if (this.step < TOTAL_STEPS) {
+    if (this.step < TOTAL_STEPS - 1) {
       this.step += 1;
     } else {
       this.step = -1;
@@ -42,6 +42,7 @@ export default class GameModel {
 
   addAnswer(answer) {
     this.answers.push(answer);
+    this.nextStep();
   }
 
   canContinue() {

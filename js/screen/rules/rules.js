@@ -1,5 +1,4 @@
 import RulesView from './rules-view.js';
-import {changeScreen} from '../../common/utilites.js';
 
 export default (router) => {
 
