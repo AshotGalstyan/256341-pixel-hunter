@@ -1,15 +1,42 @@
-import HeaderView from '../../header-view.js';
+// import GameView from './game-view.js';
+import HeaderView from '../../common/header-view.js';
+import Timer from '../../common/timer.js';
 import Layout1View from './layout-1-view.js';
 import Layout2View from './layout-2-view.js';
 import Layout3View from './layout-3-view.js';
-import stat from '../stat/stat.js';
-import {buildFragment, changeScreen, compareRandom, statsLine} from '../../utilites.js';
-import {INITIAL_STATE, TOTAL_STEPS, MAX_LIVES, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../constants.js';
+import Layout4View from './layout-4-view.js';
+
+import {compareRandom, statsLine} from "../../common/utilites.js";
+import {MAX_TIME_LIMIT, MAX_LIVES, TOTAL_STEPS, QUIZ_RESULTS, CRITICAL_TIME, SLOW_LIMIT, FAST_LIMIT} from '../../common/constants.js';
 
 const LayoutClasses = {
   layout1: Layout1View,
   layout2: Layout2View,
-  layout3: Layout3View
+  layout3: Layout3View,
+  layout4: Layout4View
+};
+
+const rankingAnswer = (answer, time) => {
+
+  if (time > FAST_LIMIT && answer === QUIZ_RESULTS.correct.type) {
+    return QUIZ_RESULTS.fast.type;
+  } else if (time < SLOW_LIMIT && answer === QUIZ_RESULTS.correct.type) {
+    return QUIZ_RESULTS.slow.type;
+  }
+  return answer;
+};
+
+const livesLine = (lives, total) => {
+
+  const template = [
+    `<img src="img/heart__empty.svg" class="game__heart" alt="Life" width="31" height="27">`,
+    `<img src="img/heart__full.svg" class="game__heart" alt="Life" width="31" height="27">`
+  ];
+
+  const tmp = Array.from(`0`.repeat(total - lives) + `1`.repeat(lives));
+
+  return tmp.map((el) => template[el]).join(` `);
+
 };
 
 const generateScreenplay = (totalSteps) => {
@@ -28,94 +55,97 @@ const generateScreenplay = (totalSteps) => {
   return out;
 };
 
-const livesLine = (lives, total) => {
+const timeCategorization = (time) => (time > CRITICAL_TIME ? time : `<span class="dangertime">` + time + `</span>`);
 
-  const template = [
-    `<img src="img/heart__empty.svg" class="game__heart" alt="Life" width="31" height="27">`,
-    `<img src="img/heart__full.svg" class="game__heart" alt="Life" width="31" height="27">`
-  ];
+export default class gameScreen {
 
-  const tmp = Array.from(`0`.repeat(total - lives) + `1`.repeat(lives));
+  constructor(router, model) {
+    this.router = router;
+    this.model = model;
+    this.timer = new Timer(MAX_TIME_LIMIT);
+    this.screenplay = generateScreenplay(TOTAL_STEPS);
 
-  return tmp.map((el) => template[el]).join(` `);
+    this.root = document.createElement(`div`);
 
-};
+    this.updateHeader();
+    this.updateQuest();
 
-const canContinue = (state) => state.lives - 1;
+    this.root.appendChild(this.header.element);
+    this.root.appendChild(this.quest.element);
 
-const die = (state) => {
-  if (!canContinue(state)) {
-    state.gameOver = true;
-  }
-  state.lives -= 1;
-
-  return state;
-};
-
-const nextStep = (state, result) => {
-
-  state.answers.push(result);
-  state.currentStepTime = MAX_TIME_LIMIT;
-
-  if (state.step < TOTAL_STEPS - 1) {
-    state.step += 1;
-  } else {
-    state.gameOver = true;
+    this.start();
   }
 
-  return state;
-};
+  get element() {
+    return this.root;
+  }
 
-const nextAction = (gameConfig, state, header, quest) => {
+  start() {
+    this.reset();
+    this.intervalId = setInterval(() => {
+      const time = this.timer.tick();
+      this.updateHeader();
+      if (time === `finished`) {
+        this.reset();
+        this.answer(QUIZ_RESULTS.dead.type);
+      }
+    }, 1000);
+  }
 
-  if (quest.result !== QUIZ_RESULTS.incompleate.type) {
-    if (quest.result === QUIZ_RESULTS.dead.type) {
-      state = die(state);
-    }
-    state = nextStep(state, quest.result);
+  reset() {
+    this.timer.reset();
+    clearInterval(this.intervalId);
+  }
 
-    if (state.gameOver) {
+  updateHeader() {
+    const lives = livesLine(this.model.getCurrentLives(), MAX_LIVES);
+    const timer = timeCategorization(this.timer.getTime());
+    const header = new HeaderView(timer, lives);
+
+    header.onClick = () => {
       header.unbind();
-      quest.unbind();
-      changeScreen(stat(gameConfig, state.answers, state.lives));
-    } else {
-      changeScreen(gameUpdate(gameConfig, state));
+      this.router.showRules();
+    };
+
+    if (this.header) {
+      this.root.replaceChild(header.element, this.header.element);
+    }
+    this.header = header;
+  }
+
+  updateQuest() {
+    const quest = new LayoutClasses[this.screenplay[this.model.getCurrentStep()]](statsLine(this.model.answers, TOTAL_STEPS));
+
+    quest.onFinishQuest = () => {
+      this.answer(this.quest.result);
+    };
+
+    if (this.quest) {
+      this.root.replaceChild(quest.element, this.quest.element);
+    }
+    this.quest = quest;
+  }
+
+  answer(result) {
+
+    if (result !== QUIZ_RESULTS.incompleate.type) {
+      if (result === QUIZ_RESULTS.dead.type) {
+        this.model.die();
+        this.model.addAnswer(result);
+      } else {
+        this.model.addAnswer(rankingAnswer(result, this.timer.getTime()));
+      }
+
+      if (this.model.canContinue()) {
+        this.updateQuest();
+        this.updateHeader();
+        this.start();
+      } else {
+        this.reset();
+        this.header.unbind();
+        this.quest.unbind();
+        this.router.showStat(this.model.getAnswers(), this.model.getCurrentLives());
+      }
     }
   }
-};
-
-const gameUpdate = (gameConfig, state) => {
-
-  // Workaround - simulate a timer
-  state.currentStepTime = Math.floor(Math.random() * 40) + 1;
-
-  const header = new HeaderView(state.currentStepTime, livesLine(state.lives, MAX_LIVES));
-  const quest = new LayoutClasses[state.screenplay[state.step]](statsLine(state.answers, TOTAL_STEPS));
-
-  header.onClick = () => {
-    header.unbind();
-    changeScreen(gameConfig.beginPoint());
-  };
-
-  quest.onFinishQuest = () => {
-    quest.answerTime = state.currentStepTime;
-    nextAction(gameConfig, state, header, quest);
-  };
-
-  return buildFragment([header.element, quest.element]);
-
-};
-
-const game = (gameConfig) => {
-
-  const state = Object.assign({}, INITIAL_STATE);
-
-  state.answers = [];
-  state.screenplay = generateScreenplay(TOTAL_STEPS);
-  // console.log(`Begin: ` +  JSON.stringify(state));
-
-  return gameUpdate(gameConfig, state);
-
-};
-
-export {game as default};
+}

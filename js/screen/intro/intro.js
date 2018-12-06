@@ -1,12 +1,12 @@
 import IntroView from './intro-view.js';
-import {changeScreen} from '../../utilites.js';
-import greeting from '../greeting/greeting.js';
 
-export default () => {
+export default (router) => {
+
   const intro = new IntroView();
+
   intro.onClick = () => {
     intro.unbind();
-    changeScreen(greeting());
+    router.showGreeting();
   };
 
   return intro.element;

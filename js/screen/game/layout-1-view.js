@@ -1,7 +1,7 @@
-import AbstractView from '../../abstract-view.js';
-import {debug, MAX_TIME_LIMIT, QUIZ_RESULTS} from '../../constants.js';
-import {createImage, selectImages, rankingAnswer} from '../../utilites.js';
-import {IMAGES} from '../../data/game-data.js';
+import AbstractView from '../../common/abstract-view.js';
+import {DEBUG, QUIZ_RESULTS} from '../../common/constants.js';
+import {createImage, selectImages} from '../../common/utilites.js';
+import {IMAGES} from '../../data/data.js';
 
 const getTrueAnswer = (images) => {
   return IMAGES.get(images[0]).type;
@@ -23,8 +23,8 @@ export default class Layout1View extends AbstractView {
       <section class="game">
         <p class="game__task">${this.title}</p>
         <form class="game__content  game__content--wide">
-          <div class="game__option">
-          ${createImage(this.images[0], `Option`, (debug ? IMAGES.get(this.images[0]).type : ``), this._place, {width: IMAGES.get(this.images[0]).width, height: IMAGES.get(this.images[0]).height})}
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + IMAGES.get(this.images[0]).type + `&nbsp;"` : ``)}>
+          ${createImage(this.images[0], `Option`, this._place, {width: IMAGES.get(this.images[0]).width, height: IMAGES.get(this.images[0]).height})}
             <label class="game__answer  game__answer--photo">
               <input class="visually-hidden" name="question1" type="radio" value="photo">
               <span>Фото</span>
@@ -41,15 +41,11 @@ export default class Layout1View extends AbstractView {
   }
 
   get result() {
-
-    if (this.answerTime > MAX_TIME_LIMIT) {
-      return QUIZ_RESULTS.dead.type;
-    }
     const selectedType = this.element.querySelector(`input[type="radio"]:checked`).value;
     if (selectedType !== this.trueAnswer) {
       return QUIZ_RESULTS.wrong.type;
     }
-    return rankingAnswer(this.answerTime);
+    return QUIZ_RESULTS.correct.type;
   }
 
   bind() {

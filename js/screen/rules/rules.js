@@ -1,18 +1,14 @@
 import RulesView from './rules-view.js';
-import {changeScreen} from '../../utilites.js';
-import game from '../game/game.js';
 
+export default (router) => {
 
-export default (gameConfig) => {
   const rules = new RulesView();
-  rules.playerName = gameConfig[`playerName`];
 
   rules.onClick = () => {
+
     if (rules.name.value.trim() !== ``) {
       rules.unbind();
-
-      gameConfig.playerName = rules.name.value.trim();
-      changeScreen(game(gameConfig));
+      router.showGame(rules.name.value.trim());
     }
   };
 
@@ -24,6 +20,5 @@ export default (gameConfig) => {
       rules.nextButton.disabled = true;
     }
   };
-
   return rules.element;
 };

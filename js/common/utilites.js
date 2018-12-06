@@ -1,36 +1,19 @@
-import {resize} from './data/resize.js';
-import {IMAGES} from './data/game-data.js';
-import {SLOW_LIMIT, FAST_LIMIT, QUIZ_RESULTS} from './constants.js';
+import {IMAGES} from '../data/data.js';
 
 export const compareRandom = () => 0.5 - Math.random();
 
-export const createImage = (src, alt, title, holderSize, imageSize) => {
+export const resize = (holder, original) => {
+  const ratioWidth = original.width / holder.width;
+  const ratioHeight = original.height / holder.height;
+  const ratio = Math.max(ratioWidth, ratioHeight);
+  return {width: Math.floor(original.width / ratio), height: Math.floor(original.height / ratio)};
+};
+
+export const createImage = (src, alt, holderSize, imageSize) => {
 
   const size = resize(holderSize, imageSize);
 
-  return `<img src="${src}" alt="${alt}" width="${size.width}" height="${size.height}" ${(title.length > 0 ? `title="` + title + `"` : ``)}>`;
-
-};
-
-export const rankingAnswer = (time) => {
-
-  if (time > SLOW_LIMIT) {
-    return QUIZ_RESULTS.slow.type;
-  } else if (time < FAST_LIMIT) {
-    return QUIZ_RESULTS.fast.type;
-  }
-  return QUIZ_RESULTS.correct.type;
-};
-
-export const showCurrentState = (answers, total) => {
-
-  let out = ``;
-
-  for (let i = 0; i < total; i++) {
-    out += `<li class="stats__result stats__result--` + (i < answers.length ? answers[i] : `unknown`) + `"></li>`;
-  }
-
-  return out;
+  return `<img src="${src}" alt="${alt}" width="${size.width}" height="${size.height}">`;
 
 };
 
@@ -46,6 +29,10 @@ export const statsLine = (answers, total = 0) => {
   return answers.map((el) => `<li class="stats__result stats__result--` + el + `"></li>`).join(` `) + (total > 0 ? [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`).join(` `) : ``);
 };
 
+export const getTrueAnswer = (images, type) => {
+  return images.filter((el) => IMAGES.get(el).type === type)[0];
+};
+
 export const render = (template) => {
   const wrapper = document.createElement(`div`);
   wrapper.innerHTML = template.trim();
@@ -58,9 +45,7 @@ export const buildFragment = (elements) => {
   return fragment;
 };
 
-const mainElement = document.querySelector(`#main`);
-
-export const changeScreen = (element) => {
+export const changeScreen = (mainElement, element) => {
   mainElement.innerHTML = ``;
   mainElement.appendChild(element);
 };
