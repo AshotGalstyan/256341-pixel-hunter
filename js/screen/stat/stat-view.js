@@ -54,20 +54,21 @@ const showCurrentScore = (currNumber, answers, lives) => {
           </tr>
           `;
         } else if (key !== `total`) {
-          return `
-          <tr>
-          <td></td>
-            <td class="result__extra">${STAT_INFO[key].title}</td>
-            <td class="result__extra">${currentScore[key]} <span class="stats__result stats__result--${key}"></span></td>
-            <td class="result__points">× ${Math.abs(STAT_INFO[key].bonus)}</td>
-            <td class="result__total">${currentScore[key] * STAT_INFO[key].bonus}</td>
-          </tr>
-          `;
+          return (currentScore[key] > 0 ?
+            `
+            <tr>
+            <td></td>
+              <td class="result__extra">${STAT_INFO[key].title}</td>
+              <td class="result__extra">${currentScore[key]} <span class="stats__result stats__result--${key}"></span></td>
+              <td class="result__points">× ${Math.abs(STAT_INFO[key].bonus)}</td>
+              <td class="result__total">${currentScore[key] * STAT_INFO[key].bonus}</td>
+            </tr>
+            ` : ``
+          );
         }
         return `
           <tr><td colspan="5" class="result__total  result__total--final">${currentScore[key]}</td></tr>
           `;
-
       }).join(``)
     )
   );
@@ -99,12 +100,17 @@ export default class StatView extends AbstractView {
     this.lives = lives;
   }
 
+  get wrapperTag() {
+    return `section`;
+  }
+  get wrapperAttributes() {
+    return {class: `result`};
+  }
+
   get template() {
     return `
-      <section class="result">
-        <h2 class="result__title">${this.title}</h2>
-        ${this.statistics}
-      </section>
+      <h2 class="result__title">${this.title}</h2>
+      ${this.statistics}
       `;
   }
 }

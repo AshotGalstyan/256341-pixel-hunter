@@ -1,17 +1,19 @@
 import StatView from './stat-view.js';
-import HeaderView from '../../common/header-view.js';
-import {buildFragment} from '../../common/utilites.js';
+import LogoView from '../../common/logo-view.js';
+import {render} from '../../common/utilites.js';
 
 export default (router, answers, lives) => {
 
-  const header = new HeaderView();
-  const stat = new StatView(answers, lives);
-
-  header.onClick = () => {
-    header.unbind();
+  const logo = new LogoView();
+  logo.onClick = () => {
+    console.log(`AAA`);
+    logo.unbind();
     router.showRules();
   };
 
-  return buildFragment([header.element, stat.element]);
+  const header = render([logo.element], `header`, {class: `header`});
+  const stat = new StatView(answers, lives);
+
+  return render([header, stat.element]);
 
 };

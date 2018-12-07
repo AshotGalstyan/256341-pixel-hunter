@@ -1,12 +1,15 @@
 // import GameView from './game-view.js';
-import HeaderView from '../../common/header-view.js';
+import LogoView from '../../common/logo-view.js';
+import TimeTabloView from './time-tablo-view.js';
+import LivesTabloView from './lives-tablo-view.js';
+
 import Timer from '../../common/timer.js';
 import Layout1View from './layout-1-view.js';
 import Layout2View from './layout-2-view.js';
 import Layout3View from './layout-3-view.js';
 import Layout4View from './layout-4-view.js';
 
-import {compareRandom, statsLine} from "../../common/utilites.js";
+import {compareRandom, statsLine, render} from "../../common/utilites.js";
 import {MAX_TIME_LIMIT, MAX_LIVES, TOTAL_STEPS, QUIZ_RESULTS, CRITICAL_TIME, SLOW_LIMIT, FAST_LIMIT} from '../../common/constants.js';
 
 const LayoutClasses = {
@@ -64,14 +67,21 @@ export default class gameScreen {
     this.model = model;
     this.timer = new Timer(MAX_TIME_LIMIT);
     this.screenplay = generateScreenplay(TOTAL_STEPS);
+    this.allPartsReady = false;
 
-    this.root = document.createElement(`div`);
+    const logo = new LogoView();
+    logo.onClick = () => {
+      logo.unbind();
+      this.router.showRules();
+    };
+    this.logoObject = logo;
+    this.logo = logo.element;
 
-    this.updateHeader();
+    this.updateTimer();
     this.updateQuest();
 
-    this.root.appendChild(this.header.element);
-    this.root.appendChild(this.quest.element);
+    this.header = render([this.logo, this.timeTablo, this.livesTablo], `header`, {class: `header`});
+    this.root = render([this.header, this.quest]);
 
     this.start();
   }
@@ -80,11 +90,45 @@ export default class gameScreen {
     return this.root;
   }
 
+  updateHeader(newTimeTablo) {
+    this.header.replaceChild(newTimeTablo, this.timeTablo);
+  }
+
+  updateTimer() {
+    const timer = timeCategorization(this.timer.getTime());
+    const timeTablo = new TimeTabloView(timer);
+
+    if (this.allPartsReady) {
+      this.updateHeader(timeTablo.element);
+    }
+    this.timeTablo = timeTablo.element;
+  }
+
+  updateQuest() {
+
+    const livesTablo = new LivesTabloView(livesLine(this.model.getCurrentLives(), MAX_LIVES));
+    if (this.allPartsReady) {
+      this.header.replaceChild(livesTablo.element, this.livesTablo);
+    }
+    this.livesTablo = livesTablo.element;
+
+    const quest = new LayoutClasses[this.screenplay[this.model.getCurrentStep()]](statsLine(this.model.answers, TOTAL_STEPS));
+    this.questObject = quest;
+    quest.onFinishQuest = () => {
+      this.answer(this.questObject.result);
+    };
+    if (this.allPartsReady) {
+      this.root.replaceChild(quest.element, this.quest);
+    }
+    this.quest = quest.element;
+  }
+
   start() {
+    this.allPartsReady = true;
     this.reset();
     this.intervalId = setInterval(() => {
       const time = this.timer.tick();
-      this.updateHeader();
+      this.updateTimer();
       if (time === `finished`) {
         this.reset();
         this.answer(QUIZ_RESULTS.dead.type);
@@ -97,37 +141,7 @@ export default class gameScreen {
     clearInterval(this.intervalId);
   }
 
-  updateHeader() {
-    const lives = livesLine(this.model.getCurrentLives(), MAX_LIVES);
-    const timer = timeCategorization(this.timer.getTime());
-    const header = new HeaderView(timer, lives);
-
-    header.onClick = () => {
-      header.unbind();
-      this.router.showRules();
-    };
-
-    if (this.header) {
-      this.root.replaceChild(header.element, this.header.element);
-    }
-    this.header = header;
-  }
-
-  updateQuest() {
-    const quest = new LayoutClasses[this.screenplay[this.model.getCurrentStep()]](statsLine(this.model.answers, TOTAL_STEPS));
-
-    quest.onFinishQuest = () => {
-      this.answer(this.quest.result);
-    };
-
-    if (this.quest) {
-      this.root.replaceChild(quest.element, this.quest.element);
-    }
-    this.quest = quest;
-  }
-
   answer(result) {
-
     if (result !== QUIZ_RESULTS.incompleate.type) {
       if (result === QUIZ_RESULTS.dead.type) {
         this.model.die();
@@ -137,13 +151,14 @@ export default class gameScreen {
       }
 
       if (this.model.canContinue()) {
+        this.reset();
+        this.updateTimer();
         this.updateQuest();
-        this.updateHeader();
         this.start();
       } else {
         this.reset();
-        this.header.unbind();
-        this.quest.unbind();
+        this.logoObject.unbind();
+        this.questObject.unbind();
         this.router.showStat(this.model.getAnswers(), this.model.getCurrentLives());
       }
     }
