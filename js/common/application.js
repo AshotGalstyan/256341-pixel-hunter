@@ -38,7 +38,7 @@ const convertServerData = (serverData) => {
 
     switch (it.type) {
       case `tinder-like`:
-        step.answers = [it.answers[0].image.type];
+        step.answers = [it.answers[0].type];
         break;
       case `one-of-three`:
         const photos = it.answers.filter((el) => el.type === `photo`);
@@ -46,7 +46,7 @@ const convertServerData = (serverData) => {
         step.answers = (paintings.length === 1 ? [paintings[0].image.url] : [photos[0].image.url]);
         break;
       case `two-of-two`:
-        step.answers = [it.answers[0].image.type, it.answers[1].image.type];
+        step.answers = [it.answers[0].type, it.answers[1].type];
         break;
     }
     return step;

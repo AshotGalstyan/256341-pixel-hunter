@@ -6,7 +6,6 @@ export default (router, answers, lives) => {
 
   const logo = new LogoView();
   logo.onClick = () => {
-    console.log(`AAA`);
     logo.unbind();
     router.showRules();
   };

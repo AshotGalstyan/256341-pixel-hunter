@@ -4,20 +4,18 @@ import TimeTabloView from './time-tablo-view.js';
 import LivesTabloView from './lives-tablo-view.js';
 
 import Timer from '../../common/timer.js';
-import Layout1View from './layout-1-view.js';
-import Layout2View from './layout-2-view.js';
-import Layout3View from './layout-3-view.js';
-import Layout4View from './layout-4-view.js';
 
-import {compareRandom, statsLine, render} from "../../common/utilites.js";
+import TinderLike from './tinder-like-view.js';
+import OneOfThree from './one-of-three-view.js';
+import TwoOfTwo from './two-of-two-view.js';
+
+import {statsLine, render} from "../../common/utilites.js";
 import {MAX_TIME_LIMIT, MAX_LIVES, TOTAL_STEPS, QUIZ_RESULTS, CRITICAL_TIME, SLOW_LIMIT, FAST_LIMIT} from '../../common/constants.js';
 
-const LayoutClasses = {
-  layout1: Layout1View,
-  layout2: Layout2View,
-  layout3: Layout3View,
-  layout4: Layout4View
-};
+const LayoutClasses = {};
+LayoutClasses[`tinder-like`] = TinderLike;
+LayoutClasses[`one-of-three`] = OneOfThree;
+LayoutClasses[`two-of-two`] = TwoOfTwo;
 
 const rankingAnswer = (answer, time) => {
 
@@ -42,31 +40,15 @@ const livesLine = (lives, total) => {
 
 };
 
-const generateScreenplay = (totalSteps) => {
-
-  const layouts = Object.keys(LayoutClasses);
-
-  const out = [];
-  let previousLayout = ``;
-
-  for (let i = 0; i < totalSteps; i++) {
-    const candidates = layouts.filter((el) => el !== previousLayout);
-    const layout = (candidates.length === 0 ? previousLayout : candidates.sort(() => compareRandom())[0]);
-    previousLayout = layout;
-    out.push(layout);
-  }
-  return out;
-};
-
 const timeCategorization = (time) => (time > CRITICAL_TIME ? time : `<span class="dangertime">` + time + `</span>`);
 
 export default class gameScreen {
 
   constructor(router, model) {
+
     this.router = router;
     this.model = model;
     this.timer = new Timer(MAX_TIME_LIMIT);
-    this.screenplay = generateScreenplay(TOTAL_STEPS);
     this.allPartsReady = false;
 
     const logo = new LogoView();
@@ -112,7 +94,9 @@ export default class gameScreen {
     }
     this.livesTablo = livesTablo.element;
 
-    const quest = new LayoutClasses[this.screenplay[this.model.getCurrentStep()]](statsLine(this.model.answers, TOTAL_STEPS));
+    const currentStep = this.model.screenplay[this.model.getCurrentStep()];
+
+    const quest = new LayoutClasses[currentStep.type](currentStep, this.model.gameImages, statsLine(this.model.answers, TOTAL_STEPS));
     this.questObject = quest;
     quest.onFinishQuest = () => {
       this.answer(this.questObject.result);

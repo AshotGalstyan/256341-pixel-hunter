@@ -157,7 +157,6 @@
 /* Added for debug */
 .game__option::after {
   content: attr(data-type);
-  width: 100px;
   position: absolute;
   top: -32px;
   left: 50%;

@@ -1,20 +1,18 @@
 import AbstractView from '../../common/abstract-view.js';
 import {DEBUG, QUIZ_RESULTS} from '../../common/constants.js';
-import {createImage, selectImages} from '../../common/utilites.js';
-import {IMAGES} from '../../data/data.js';
+import {createImage} from '../../common/utilites.js';
 
-const getTrueAnswers = (images) => {
-  return [IMAGES.get(images[0]).type, IMAGES.get(images[1]).type];
-};
+export default class TwoOfTwo extends AbstractView {
 
-export default class Layout2View extends AbstractView {
+  constructor(step, images, statistics) {
 
-  constructor(statistics) {
     super();
-    this.title = `Угадайте для каждого изображения фото или рисунок?`;
-    this.images = selectImages([...IMAGES.keys()], 2);
-    this.trueAnswers = getTrueAnswers(this.images);
-    this._place = {width: 468, height: 458};
+
+    this.title = step.question;
+    this.images = step.images;
+    this.allImages = images;
+    this.trueAnswers = step.answers;
+    this._place = step.size;
     this.statistics = statistics;
   }
 
@@ -23,25 +21,25 @@ export default class Layout2View extends AbstractView {
       <section class="game">
         <p class="game__task">${this.title}</p>
         <form class="game__content">
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + IMAGES.get(this.images[0]).type + `&nbsp;"` : ``)}>
-            ${createImage(this.images[0], `Option 1`, this._place, {width: IMAGES.get(this.images[0]).width, height: IMAGES.get(this.images[0]).height})}
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + this.allImages.get(this.images[0]).type + `&nbsp;"` : ``)}>
+            ${createImage(this.images[0], `Option 1`, this._place, this.allImages.get(this.images[0]).size)}
             <label class="game__answer game__answer--photo">
               <input class="visually-hidden" name="question1" type="radio" value="photo">
               <span>Фото</span>
             </label>
             <label class="game__answer game__answer--paint">
-              <input class="visually-hidden" name="question1" type="radio" value="paint">
+              <input class="visually-hidden" name="question1" type="radio" value="painting">
               <span>Рисунок</span>
             </label>
           </div>
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + IMAGES.get(this.images[1]).type + `&nbsp;"` : ``)}>
-            ${createImage(this.images[1], `Option 2`, this._place, {width: IMAGES.get(this.images[1]).width, height: IMAGES.get(this.images[1]).height})}
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + this.allImages.get(this.images[1]).type + `&nbsp;"` : ``)}>
+            ${createImage(this.images[1], `Option 2`, this._place, this.allImages.get(this.images[1]).size)}
             <label class="game__answer  game__answer--photo">
               <input class="visually-hidden" name="question2" type="radio" value="photo">
               <span>Фото</span>
             </label>
             <label class="game__answer  game__answer--paint">
-              <input class="visually-hidden" name="question2" type="radio" value="paint">
+              <input class="visually-hidden" name="question2" type="radio" value="painting">
               <span>Рисунок</span>
             </label>
           </div>
