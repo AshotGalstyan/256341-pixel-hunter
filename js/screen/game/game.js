@@ -56,6 +56,7 @@ export default class gameScreen {
       logo.unbind();
       this.router.showRules();
     };
+
     this.logoObject = logo;
     this.logo = logo.element;
 
@@ -143,7 +144,7 @@ export default class gameScreen {
         this.reset();
         this.logoObject.unbind();
         this.questObject.unbind();
-        this.router.showStat(this.model.getAnswers(), this.model.getCurrentLives());
+        this.router.fixStat(this.model.getAnswers(), this.model.getCurrentLives(), this.model.playerName);
       }
     }
   }

@@ -25,15 +25,3 @@ export const STAT_INFO = {
   slow: {title: `Штраф за медлительность:`, bonus: QUIZ_RESULTS.slow.points - QUIZ_RESULTS.correct.points},
   total: {title: ``}
 };
-
-export const IMAGE_TYPES = {
-  photo: `photo`,
-  paint: `paint`
-};
-
-export const LAYOUT_CLASSES = {
-  layout1: `Layout1View`,
-  layout2: `Layout2View`,
-  layout3: `Layout3View`,
-  layout4: `Layout4View`
-};

@@ -2,7 +2,7 @@ import StatView from './stat-view.js';
 import LogoView from '../../common/logo-view.js';
 import {render} from '../../common/utilites.js';
 
-export default (router, answers, lives) => {
+export default (router, archive) => {
 
   const logo = new LogoView();
   logo.onClick = () => {
@@ -11,7 +11,7 @@ export default (router, answers, lives) => {
   };
 
   const header = render([logo.element], `header`, {class: `header`});
-  const stat = new StatView(answers, lives);
+  const stat = new StatView(archive);
 
   return render([header, stat.element]);
 

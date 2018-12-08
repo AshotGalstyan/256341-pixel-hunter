@@ -1,7 +1,6 @@
 import AbstractView from '../../common/abstract-view.js';
 import {statsLine} from '../../common/utilites.js';
 import {TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS, STAT_INFO, TOTAL_TITLE_FOR_FAILED} from '../../common/constants.js';
-import {ARCHIVE} from '../../data/data.js';
 
 const getScore = (answers, lives) => {
 
@@ -77,12 +76,12 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
 };
 
-const getStatistics = (answers, lives, archive) => {
+const getStatistics = (archive) => {
 
-  let template = showCurrentScore(1, answers, lives);
+  let template = ``;
 
   for (let i = 0; i < archive.length; i++) {
-    template += showCurrentScore(i + 2, archive[i].answers, archive[i].lives);
+    template += showCurrentScore(i + 1, archive[i].answers, archive[i].lives);
   }
 
   return template;
@@ -91,13 +90,14 @@ const getStatistics = (answers, lives, archive) => {
 
 export default class StatView extends AbstractView {
 
-  constructor(answers, lives) {
+  constructor(archive) {
+
+    console.log(archive);
 
     super();
 
-    this.title = (answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`);
-    this.statistics = getStatistics(answers, lives, ARCHIVE);
-    this.lives = lives;
+    this.title = (archive[0].answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`);
+    this.statistics = getStatistics(archive);
   }
 
   get wrapperTag() {
