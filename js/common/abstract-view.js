@@ -6,6 +6,12 @@ class AbstractView {
       throw new Error(`Can't instantiate AbstractView, only concrete one`);
     }
   }
+  get wrapperTag() {
+    // div is default tag
+  }
+  get wrapperAttributes() {
+    return {}; // without attributes
+  }
 
   get template() {
     throw new Error(`Template is required`);
@@ -21,7 +27,7 @@ class AbstractView {
   }
 
   render() {
-    return render(this.template);
+    return render(this.template, this.wrapperTag, this.wrapperAttributes);
   }
 
   bind() {

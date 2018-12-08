@@ -33,16 +33,21 @@ export const getTrueAnswer = (images, type) => {
   return images.filter((el) => IMAGES.get(el).type === type)[0];
 };
 
-export const render = (template) => {
-  const wrapper = document.createElement(`div`);
-  wrapper.innerHTML = template.trim();
+export const render = (inner, wrapperTag = `div`, wrapperAttributes = {}) => {
+  const wrapper = document.createElement(wrapperTag);
+  for (const key in wrapperAttributes) {
+    if (wrapperAttributes.hasOwnProperty(key)) {
+      wrapper.setAttribute(key, wrapperAttributes[key]);
+    }
+  }
+  if (inner instanceof Array) {
+    const fragment = document.createDocumentFragment();
+    inner.forEach((element) => fragment.appendChild(element));
+    wrapper.appendChild(fragment);
+  } else {
+    wrapper.innerHTML = inner.trim();
+  }
   return wrapper;
-};
-
-export const buildFragment = (elements) => {
-  const fragment = document.createDocumentFragment();
-  elements.forEach((element) => fragment.appendChild(element));
-  return fragment;
 };
 
 export const changeScreen = (mainElement, element) => {
