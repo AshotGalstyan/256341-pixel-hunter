@@ -78,12 +78,14 @@ export default class gameScreen {
     const modal = new ModalView();
     modal.onOk = (evt) => {
       evt.preventDefault();
+      modal.unbind();
       this.router.showGreeting();
     };
 
     modal.onCancel = (evt) => {
       evt.preventDefault();
       this.unfreezTimer();
+      modal.unbind();
       this.root.removeChild(modal.element);
     };
 
@@ -104,14 +106,8 @@ export default class gameScreen {
     this.timeTablo = timeTablo.element;
   }
 
-  freezTimer() {
-    this._freezedTime = this.timer.getTime();
-    clearInterval(this.intervalId);
-  }
-
-  unfreezTimer() {
-    this.timer.setTime(this._freezedTime);
-    this.intervalId = setInterval(() => {
+  getTimerId() {
+    return setInterval(() => {
       const time = this.timer.tick();
       this.updateTimer();
       if (time === `finished`) {
@@ -119,6 +115,16 @@ export default class gameScreen {
         this.answer(QUIZ_RESULTS.dead.type);
       }
     }, 1000);
+  }
+
+  freezTimer() {
+    this._freezedTime = this.timer.getTime();
+    clearInterval(this.intervalId);
+  }
+
+  unfreezTimer() {
+    this.timer.setTime(this._freezedTime);
+    this.intervalId = this.getTimerId();
   }
 
   updateQuest() {
@@ -145,14 +151,7 @@ export default class gameScreen {
   start() {
     this.allPartsReady = true;
     this.reset();
-    this.intervalId = setInterval(() => {
-      const time = this.timer.tick();
-      this.updateTimer();
-      if (time === `finished`) {
-        this.reset();
-        this.answer(QUIZ_RESULTS.dead.type);
-      }
-    }, 1000);
+    this.intervalId = this.getTimerId();
   }
 
   reset() {

@@ -5,4 +5,5 @@ export default (out) => {
   const intro = new IntroView(out);
 
   return intro.element;
+
 };

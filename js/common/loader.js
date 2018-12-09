@@ -25,6 +25,8 @@ const checkStatus = (response) => {
 
 const toJSON = (res) => res.json();
 
+const sortResults = (archive) => archive.sort((el1, el2) => el2.date - el1.date);
+
 const convertServerData = (serverData) => {
   const images = new Map();
   const screenplay = serverData.map((it) => {
@@ -108,7 +110,7 @@ export default class Loader {
   }
 
   static loadResults(name = DEFAULT_NAME) {
-    return fetch(`${SERVER_URL}/stats/${APP_ID}-${name}`).then(checkStatus).then(toJSON);
+    return fetch(`${SERVER_URL}/stats/${APP_ID}-${name}`).then(checkStatus).then(toJSON).then(sortResults);
   }
 
   static saveResults(data, name = DEFAULT_NAME) {

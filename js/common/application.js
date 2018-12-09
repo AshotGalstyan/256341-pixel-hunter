@@ -4,20 +4,20 @@ import greetingScreen from '../screen/greeting/greeting.js';
 import rulesScreen from '../screen/rules/rules.js';
 import statScreen from '../screen/stat/stat.js';
 import GameScreen from '../screen/game/game.js';
-import ErrorScreen from '../screen/error/error.js';
+import errorScreen from '../screen/error/error.js';
 import Loader from './loader.js';
 
 const mainElement = document.querySelector(`#main`);
 
-const changeScreen = (mainElement, element) => {
-  mainElement.innerHTML = ``;
-  mainElement.appendChild(element);
+const changeScreen = (wrapper, element) => {
+  wrapper.innerHTML = ``;
+  wrapper.appendChild(element);
 };
 
-const change2Screens = (mainElement, element1, element2) => {
-  mainElement.innerHTML = ``;
-  mainElement.appendChild(element1);
-  mainElement.appendChild(element2);
+const change2Screens = (wrapper, element1, element2) => {
+  wrapper.innerHTML = ``;
+  wrapper.appendChild(element1);
+  wrapper.appendChild(element2);
 };
 
 let gameData;
@@ -29,7 +29,9 @@ export default class Application {
     changeScreen(mainElement, intro);
 
     Loader.loadData()
-      .then((data) => gameData = data)
+      .then((data) => {
+        gameData = data;
+      })
       .then(() => Application.hideIntro())
       .catch((err) => Application.showError(err));
   }
@@ -73,7 +75,7 @@ export default class Application {
   }
 
   static showError(err) {
-    const errorModal = ErrorScreen(err);
+    const errorModal = errorScreen(err);
     changeScreen(mainElement, errorModal);
   }
 }

@@ -15,12 +15,7 @@ const getScore = (answers, lives) => {
     }
   }
 
-  let total = 0;
-  for (const key in score) {
-    if (score.hasOwnProperty(key)) {
-      total += score[key] * QUIZ_RESULTS[key].points;
-    }
-  }
+  const total = Object.keys(score).reduce((sum, key) => sum + score[key] * QUIZ_RESULTS[key].points, 0);
   score.total = total + lives * LIVES_TO_POINT;
   score.lives = lives;
 
@@ -28,14 +23,23 @@ const getScore = (answers, lives) => {
 
 };
 
-const showCurrentScore = (currNumber, answers, lives) => {
+const showCurrentScore = (currNumber, answers, lives, date) => {
 
   const currentScore = getScore(answers, lives);
+
+  const gameDate = new Date(date).toLocaleDateString(`en-GB`, {
+    day: `numeric`,
+    month: `short`,
+    year: `numeric`,
+    hour: `numeric`,
+    minute: `numeric`,
+    second: `numeric`
+  });
 
   const statBody = (answers.length < TOTAL_STEPS ?
     (`
       <tr>
-        <td class="result__number">${currNumber}</td>
+        <td class="result__number" title="${gameDate}">${currNumber}</td>
         <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
         <td class="result__points"></td>
         <td class="result__total  result__total--final">${TOTAL_TITLE_FOR_FAILED}</td>
@@ -46,7 +50,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
         if (key === `correct`) {
           return `
           <tr>
-            <td class="result__number">${currNumber}.</td>
+            <td class="result__number" title="${gameDate}">${currNumber}.</td>
             <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
             <td class="result__points">× ${STAT_INFO[key].bonus}</td>
             <td class="result__total">${(currentScore[key] + currentScore[QUIZ_RESULTS.fast.type] + currentScore[QUIZ_RESULTS.slow.type]) * STAT_INFO[key].bonus}</td>
@@ -78,13 +82,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
 const getStatistics = (archive) => {
 
-  let template = ``;
-
-  for (let i = 0; i < archive.length; i++) {
-    template += showCurrentScore(i + 1, archive[i].answers, archive[i].lives);
-  }
-
-  return template;
+  return archive.reduce((tmp, current, index) => tmp + showCurrentScore(index + 1, current.answers, current.lives, current.date), ``);
 
 };
 

@@ -2,7 +2,7 @@ import AbstractView from '../../common/abstract-view.js';
 
 export default class IntroView extends AbstractView {
 
- constructor(out) {
+  constructor(out) {
     super();
     this.sectionClasses = (out ? `intro intro--done` : `intro`);
   }
