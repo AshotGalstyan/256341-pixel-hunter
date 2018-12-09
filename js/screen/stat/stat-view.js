@@ -92,8 +92,6 @@ export default class StatView extends AbstractView {
 
   constructor(archive) {
 
-    console.log(archive);
-
     super();
 
     this.title = (archive[0].answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`);

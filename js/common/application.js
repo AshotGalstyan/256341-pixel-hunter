@@ -1,4 +1,3 @@
-import {changeScreen} from './utilites.js';
 import GameModel from '../model/model.js';
 import introScreen from '../screen/intro/intro.js';
 import greetingScreen from '../screen/greeting/greeting.js';
@@ -6,27 +5,39 @@ import rulesScreen from '../screen/rules/rules.js';
 import statScreen from '../screen/stat/stat.js';
 import GameScreen from '../screen/game/game.js';
 import ErrorScreen from '../screen/error/error.js';
-
 import Loader from './loader.js';
 
-import {ARCHIVE} from '../data/data.js';
-
 const mainElement = document.querySelector(`#main`);
+
+const changeScreen = (mainElement, element) => {
+  mainElement.innerHTML = ``;
+  mainElement.appendChild(element);
+};
+
+const change2Screens = (mainElement, element1, element2) => {
+  mainElement.innerHTML = ``;
+  mainElement.appendChild(element1);
+  mainElement.appendChild(element2);
+};
 
 let gameData;
 
 export default class Application {
 
   static start() {
+    const intro = introScreen();
+    changeScreen(mainElement, intro);
+
     Loader.loadData()
       .then((data) => gameData = data)
-      .then(() => Application.showIntro())
+      .then(() => Application.hideIntro())
       .catch((err) => Application.showError(err));
   }
 
-  static showIntro() {
-    const intro = introScreen(this);
-    changeScreen(mainElement, intro);
+  static hideIntro() {
+    const intro = introScreen(true);
+    const greeting = greetingScreen(this);
+    change2Screens(mainElement, intro, greeting);
   }
 
   static showGreeting() {

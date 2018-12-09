@@ -3,14 +3,14 @@ const DEFAULT_NAME = `assa`;
 const APP_ID = 6587322;
 
 const QUESTION_TYPE = {
-  TWO_OF_TWO: 'two-of-two',
-  TINDER_LIKE: 'tinder-like',
-  ONE_OF_THREE: 'one-of-three'
+  TWO_OF_TWO: `two-of-two`,
+  TINDER_LIKE: `tinder-like`,
+  ONE_OF_THREE: `one-of-three`
 };
 
 const ANSWER_TYPE = {
-  PAINTING: 'painting',
-  PHOTO: 'photo'
+  PAINTING: `painting`,
+  PHOTO: `photo`
 };
 
 let gameSteps;
@@ -72,10 +72,10 @@ const saveData = (data) => {
 };
 
 const loadImage = (url) => {
-  return new Promise((onLoad, onError) => {
+  return new Promise((resolve, reject) => {
     const image = new Image();
-    image.onload = () => onLoad(image);
-    image.onerror = () => onError(`Не удалось загрузить картнку: ${url}`);
+    image.addEventListener(`load`, () => resolve(image));
+    image.addEventListener(`error`, () => reject(new Error(`Failed to load image's URL: ${url}`)));
     image.src = url;
   });
 };
@@ -90,14 +90,9 @@ const fixImageSize = (images) => {
   });
 };
 
-const onError = (error) => {
-  totalErrors += error;
-};
-
 const assembleData = () => {
   return {gameSteps, imagesInfo};
-}
-
+};
 
 export default class Loader {
   static loadData() {

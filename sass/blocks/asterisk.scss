@@ -5,20 +5,27 @@
 @import "../variables/colors";
 
 .asterisk {
+
+  /* Turn off Button */
+
   padding: 0;
 
   color: $main-red-color;
-  cursor: pointer;
 
   background: transparent;
   border: none;
 
-  &:hover,
-  &:focus {
-    color: $link-hover-color;
+  &--animated {
+    animation: rotation 2s infinite linear;
+  }
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
   }
 
-  &:active {
-    color: $link-active-color;
+  to {
+    transform: rotate(359deg);
   }
 }
