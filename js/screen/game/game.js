@@ -2,6 +2,7 @@
 import LogoView from '../../common/logo-view.js';
 import TimeTabloView from './time-tablo-view.js';
 import LivesTabloView from './lives-tablo-view.js';
+import ModalView from './modal-view.js';
 
 import Timer from '../../common/timer.js';
 
@@ -53,10 +54,9 @@ export default class gameScreen {
 
     const logo = new LogoView();
     logo.onClick = () => {
-      logo.unbind();
-      this.router.showRules();
+      this.freezTimer();
+      this.showModal();
     };
-
     this.logoObject = logo;
     this.logo = logo.element;
 
@@ -64,6 +64,7 @@ export default class gameScreen {
     this.updateQuest();
 
     this.header = render([this.logo, this.timeTablo, this.livesTablo], `header`, {class: `header`});
+
     this.root = render([this.header, this.quest]);
 
     this.start();
@@ -71,6 +72,22 @@ export default class gameScreen {
 
   get element() {
     return this.root;
+  }
+
+  showModal() {
+    const modal = new ModalView();
+    modal.onOk = (evt) => {
+      evt.preventDefault();
+      this.router.showGreeting();
+    };
+
+    modal.onCancel = (evt) => {
+      evt.preventDefault();
+      this.unfreezTimer();
+      this.root.removeChild(modal.element);
+    };
+
+    this.root.insertBefore(modal.element, this.root.firstChild);
   }
 
   updateHeader(newTimeTablo) {
@@ -85,6 +102,23 @@ export default class gameScreen {
       this.updateHeader(timeTablo.element);
     }
     this.timeTablo = timeTablo.element;
+  }
+
+  freezTimer() {
+    this._freezedTime = this.timer.getTime();
+    clearInterval(this.intervalId);
+  }
+
+  unfreezTimer() {
+    this.timer.setTime(this._freezedTime);
+    this.intervalId = setInterval(() => {
+      const time = this.timer.tick();
+      this.updateTimer();
+      if (time === `finished`) {
+        this.reset();
+        this.answer(QUIZ_RESULTS.dead.type);
+      }
+    }, 1000);
   }
 
   updateQuest() {
