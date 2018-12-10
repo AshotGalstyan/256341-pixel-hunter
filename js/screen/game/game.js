@@ -54,7 +54,7 @@ export default class gameScreen {
 
     const logo = new LogoView();
     logo.onClick = () => {
-      this.freezTimer();
+      this.freezeTimer();
       this.showModal();
     };
     this.logoObject = logo;
@@ -82,7 +82,7 @@ export default class gameScreen {
         this.router.showGreeting();
       })
       .catch(() => {
-        this.unfreezTimer();
+        this.unfreezeTimer();
         this.root.removeChild(modal.element);
       });
   }
@@ -112,12 +112,12 @@ export default class gameScreen {
     }, 1000);
   }
 
-  freezTimer() {
+  freezeTimer() {
     this._freezedTime = this.timer.getTime();
     clearInterval(this.intervalId);
   }
 
-  unfreezTimer() {
+  unfreezeTimer() {
     this.timer.setTime(this._freezedTime);
     this.intervalId = this.getTimerId();
   }

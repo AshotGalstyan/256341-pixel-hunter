@@ -86,13 +86,20 @@ const getStatistics = (archive) => {
 
 };
 
+const estimateGame = (answers) => {
+  if (answers.length < TOTAL_STEPS) {
+    return `Поражение`;
+  }
+  return `Победа!`;
+};
+
 export default class StatView extends AbstractView {
 
   constructor(archive) {
 
     super();
 
-    this.title = (archive[0].answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`);
+    this.title = estimateGame(archive[0].answers);
     this.statistics = getStatistics(archive);
   }
 

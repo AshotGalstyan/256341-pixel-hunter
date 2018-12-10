@@ -1,4 +1,4 @@
-import {MAX_LIVES, TOTAL_STEPS} from "../common/constants.js";
+import {MAX_LIVES, TOTAL_STEPS, QUIZ_RESULTS} from "../common/constants.js";
 
 export default class GameModel {
 
@@ -42,7 +42,13 @@ export default class GameModel {
 
   addAnswer(answer) {
     this.answers.push(answer);
-    this.nextStep();
+
+    const totalWrongs = this.answers.filter((el) => el === QUIZ_RESULTS.wrong.type || el === QUIZ_RESULTS.dead.type);
+    if (totalWrongs.length > MAX_LIVES) {
+      this.gameOver = true;
+    } else {
+      this.nextStep();
+    }
   }
 
   canContinue() {

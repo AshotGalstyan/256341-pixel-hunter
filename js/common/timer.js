@@ -1,6 +1,7 @@
 class Timer {
   constructor(time) {
-    this.time = this._startTime = time;
+    this.time = time;
+    this._startTime = time;
   }
 
   tick() {
