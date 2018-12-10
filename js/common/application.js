@@ -51,8 +51,8 @@ export default class Application {
 
   static showGame(playerName) {
     const model = new GameModel(playerName);
-    model.screenplay = gameData.gameSteps;
-    model.gameImages = gameData.imagesInfo;
+    model.screenplay = gameData.screenplay;
+    model.gameImages = gameData.images;
 
     const game = new GameScreen(this, model);
 

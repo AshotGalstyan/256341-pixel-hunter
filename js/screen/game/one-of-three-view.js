@@ -21,19 +21,19 @@ export default class OneOfThree extends AbstractView {
       <section class="game">
         <p class="game__task">${this.title}</p>
         <form class="game__content  game__content--triple">
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + this.allImages.get(this.images[0]).type + `&nbsp;"` : ``)}>
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages.get(this.images[0]).type}&nbsp;"` : ``)}>
             <label>
               ${createImage(this.images[0], `Option 1`, this._place, this.allImages.get(this.images[0]).size)}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[0]}">
             </label>
           </div>
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + this.allImages.get(this.images[1]).type + `&nbsp;"` : ``)}>
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages.get(this.images[1]).type}&nbsp;"` : ``)}>
             <label>
               ${createImage(this.images[1], `Option 2`, this._place, this.allImages.get(this.images[1]).size)}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[1]}">
             </label>
           </div>
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;` + this.allImages.get(this.images[2]).type + `&nbsp;"` : ``)}>
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages.get(this.images[2]).type}&nbsp;"` : ``)}>
             <label>
               ${createImage(this.images[2], `Option 3`, this._place, this.allImages.get(this.images[2]).size)}
               <input class="visually-hidden" name="question" type="radio" value="${this.images[2]}">

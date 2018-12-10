@@ -1,8 +1,5 @@
 import {QuestionType, AnswerType, SERVER_URL, DEFAULT_NAME, APP_ID} from './constants.js';
 
-let gameSteps;
-let imagesInfo;
-
 const checkStatus = (response) => {
   if (response.ok) {
     return response;
@@ -14,52 +11,46 @@ const toJSON = (res) => res.json();
 
 const sortResults = (archive) => archive.sort((el1, el2) => el2.date - el1.date);
 
-const convertServerData = (serverData) => {
+const getAnswersByType = (type, answers) => {
 
-  const images = new Map();
-  const screenplay = serverData.map((it) => {
-    const step = {};
-    step.type = it.type;
-    step.question = it.question;
-    step.size = {width: it.answers[0].image.width, height: it.answers[0].image.height};
+  if (type === QuestionType.TINDER_LIKE) {
 
-    step.images = it.answers.map((el) => {
-      const src = el.image.url;
-      if (!images.has(src)) {
-        images.set(src, {type: el.type});
-      }
-      return src;
-    });
+    return [answers[0].type];
 
-    switch (it.type) {
-      case QuestionType.TINDER_LIKE:
-        step.answers = [it.answers[0].type];
-        break;
-      case QuestionType.ONE_OF_THREE:
-        const photos = it.answers.filter((el) => el.type === AnswerType.PHOTO);
-        const paintings = it.answers.filter((el) => el.type === AnswerType.PAINTING);
-        step.answers = (paintings.length === 1 ? [paintings[0].image.url] : [photos[0].image.url]);
-        break;
-      case QuestionType.TWO_OF_TWO:
-        step.answers = [it.answers[0].type, it.answers[1].type];
-        break;
-      default:
-        throw new Error(`Произошла ошибка (некорректный тип вопроса)`);
-    }
+  } else if (type === QuestionType.ONE_OF_THREE) {
 
-    return step;
+    const photos = answers.filter((el) => el.type === AnswerType.PHOTO);
+    const paintings = answers.filter((el) => el.type === AnswerType.PAINTING);
 
-  });
+    return (paintings.length === 1 ? [paintings[0].image.url] : [photos[0].image.url]);
 
-  return {images, screenplay};
+  } else if (type === QuestionType.TWO_OF_TWO) {
+
+    return [answers[0].type, answers[1].type];
+
+  }
+  throw new Error(`Произошла ошибка (некорректный тип вопроса)`);
 };
 
-const saveData = (data) => {
+const convertServerData = (serverData) => {
 
-  gameSteps = data.screenplay;
-  imagesInfo = data.images;
+  const imagesMap = new Map();
+  const screenplay = serverData.map((it) => {
+    const type = it.type;
+    const question = it.question;
+    const size = {width: it.answers[0].image.width, height: it.answers[0].image.height};
+    const images = it.answers.map((el) => {
+      if (!imagesMap.has(el.image.url)) {
+        imagesMap.set(el.image.url, {type: el.type});
+      }
+      return el.image.url;
+    });
+    const answers = getAnswersByType(it.type, it.answers);
 
-  return [...data.images.keys()];
+    return {type, question, size, images, answers};
+  });
+
+  return {screenplay, images: imagesMap};
 
 };
 
@@ -72,31 +63,32 @@ const loadImage = (url) => {
   });
 };
 
-const getImageSize = (images) => {
-  images.forEach((it) => {
-
-    const tmp = imagesInfo.get(it.src);
-    tmp.size = {width: it.width, height: it.height};
-
-    imagesInfo.set(it.src, tmp);
-  });
-};
-
-const assembleData = () => {
-  return {gameSteps, imagesInfo};
-};
-
 export default class Loader {
   static loadData() {
     return fetch(`${SERVER_URL}questions`)
       .then(checkStatus)
       .then((response) => response.json())
-      .then(convertServerData)
-      .then(saveData)
+      .then((data) => {
+
+        const tmp = convertServerData(data);
+
+        this.images = tmp.images;
+        this.screenplay = tmp.screenplay;
+
+        return [...this.images.keys()];
+      })
       .then((images) => images.map((it) => loadImage(it)))
       .then((imagePromises) => Promise.all(imagePromises))
-      .then(getImageSize)
-      .then(assembleData);
+      .then((images) => {
+
+        images.forEach((it) => {
+          const tmp = this.images.get(it.src);
+          tmp.size = {width: it.width, height: it.height};
+          this.images.set(it.src, tmp);
+        });
+
+        return {screenplay: this.screenplay, images: this.images};
+      });
   }
 
   static loadResults(name = DEFAULT_NAME) {
