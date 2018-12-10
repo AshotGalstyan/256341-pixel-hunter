@@ -76,20 +76,15 @@ export default class gameScreen {
 
   showModal() {
     const modal = new ModalView();
-    modal.onOk = (evt) => {
-      evt.preventDefault();
-      modal.unbind();
-      this.router.showGreeting();
-    };
-
-    modal.onCancel = (evt) => {
-      evt.preventDefault();
-      this.unfreezTimer();
-      modal.unbind();
-      this.root.removeChild(modal.element);
-    };
-
     this.root.insertBefore(modal.element, this.root.firstChild);
+    modal.dialog()
+      .then(() => {
+        this.router.showGreeting();
+      })
+      .catch(() => {
+        this.unfreezTimer();
+        this.root.removeChild(modal.element);
+      });
   }
 
   updateHeader(newTimeTablo) {

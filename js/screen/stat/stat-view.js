@@ -27,7 +27,7 @@ const showCurrentScore = (currNumber, answers, lives, date) => {
 
   const currentScore = getScore(answers, lives);
 
-  const gameDate = new Date(date).toLocaleDateString(`en-GB`, {
+  const gameDate = new Date(date).toLocaleDateString(`ru-RU`, {
     day: `numeric`,
     month: `short`,
     year: `numeric`,

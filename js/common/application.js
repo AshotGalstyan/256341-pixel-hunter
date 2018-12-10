@@ -1,6 +1,6 @@
 import GameModel from '../model/model.js';
-import introScreen from '../screen/intro/intro.js';
-import greetingScreen from '../screen/greeting/greeting.js';
+import IntroScreen from '../screen/intro-greeting/intro.js';
+import GreetingScreen from '../screen/intro-greeting/greeting.js';
 import rulesScreen from '../screen/rules/rules.js';
 import statScreen from '../screen/stat/stat.js';
 import GameScreen from '../screen/game/game.js';
@@ -9,15 +9,11 @@ import Loader from './loader.js';
 
 const mainElement = document.querySelector(`#main`);
 
-const changeScreen = (wrapper, element) => {
+const changeScreen = (wrapper, ...elements) => {
   wrapper.innerHTML = ``;
-  wrapper.appendChild(element);
-};
-
-const change2Screens = (wrapper, element1, element2) => {
-  wrapper.innerHTML = ``;
-  wrapper.appendChild(element1);
-  wrapper.appendChild(element2);
+  for (const element of elements) {
+    wrapper.appendChild(element);
+  }
 };
 
 let gameData;
@@ -25,26 +21,21 @@ let gameData;
 export default class Application {
 
   static start() {
-    const intro = introScreen();
-    changeScreen(mainElement, intro);
+    const intro = new IntroScreen();
+    const greeting = new GreetingScreen(this);
+    changeScreen(mainElement, intro.element, greeting.element);
 
     Loader.loadData()
       .then((data) => {
         gameData = data;
       })
-      .then(() => Application.hideIntro())
+      .then(() => Application.hideIntro(intro, greeting))
       .catch((err) => Application.showError(err));
   }
 
-  static hideIntro() {
-    const intro = introScreen(true);
-    const greeting = greetingScreen(this);
-    change2Screens(mainElement, intro, greeting);
-  }
-
-  static showGreeting() {
-    const greeting = greetingScreen(this);
-    changeScreen(mainElement, greeting);
+  static hideIntro(intro, greeting) {
+    intro.fadeOut();
+    greeting.fadeIn();
   }
 
   static showRules() {

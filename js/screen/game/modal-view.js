@@ -23,23 +23,26 @@ export default class ModalView extends AbstractView {
     `;
   }
 
-  bind() {
-    this.yesButton = this.element.querySelector(`.modal__btn--yes`);
-    this.noButton = this.element.querySelector(`.modal__btn--no`);
-    this.closeButton = this.element.querySelector(`.modal__close`);
+  dialog() {
+    return new Promise((resolve, reject) => {
+      const yesButton = this.element.querySelector(`.modal__btn--yes`);
+      const noButton = this.element.querySelector(`.modal__btn--no`);
+      const closeButton = this.element.querySelector(`.modal__close`);
 
-    this.noButton.addEventListener(`click`, this.onCancel);
-    this.closeButton.addEventListener(`click`, this.onCancel);
-    this.yesButton.addEventListener(`click`, this.onOk);
+      noButton.addEventListener(`click`, function handleNoButtonClick() {
+        noButton.removeEventListener(`click`, handleNoButtonClick);
+        reject();
+      });
+
+      closeButton.addEventListener(`click`, function handleCloseButtonClick() {
+        closeButton.removeEventListener(`click`, handleCloseButtonClick);
+        reject();
+      });
+
+      yesButton.addEventListener(`click`, function handleYesButtonClick() {
+        yesButton.removeEventListener(`click`, handleYesButtonClick);
+        resolve();
+      });
+    });
   }
-
-  unbind() {
-    this.noButton.removeEventListener(`click`, this.onCancel);
-    this.closeButton.removeEventListener(`click`, this.onCancel);
-    this.yesButton.removeEventListener(`click`, this.onOk);
-  }
-
-  onOk() {}
-  onCancel() {}
-
 }
