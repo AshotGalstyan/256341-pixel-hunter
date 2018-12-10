@@ -172,7 +172,7 @@ export default class gameScreen {
         this.reset();
         this.logoObject.unbind();
         this.questObject.unbind();
-        this.router.fixStat(this.model.getAnswers(), this.model.getCurrentLives(), this.model.playerName);
+        this.router.saveCurrentGameResults(this.model.getAnswers(), this.model.getCurrentLives(), this.model.playerName);
       }
     }
   }

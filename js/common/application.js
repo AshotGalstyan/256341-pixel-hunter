@@ -1,6 +1,6 @@
 import GameModel from '../model/model.js';
-import IntroScreen from '../screen/intro-greeting/intro.js';
-import GreetingScreen from '../screen/intro-greeting/greeting.js';
+import IntroScreen from '../screen/intro/intro.js';
+import GreetingScreen from '../screen/greeting/greeting.js';
 import rulesScreen from '../screen/rules/rules.js';
 import statScreen from '../screen/stat/stat.js';
 import GameScreen from '../screen/game/game.js';
@@ -38,6 +38,12 @@ export default class Application {
     greeting.fadeIn();
   }
 
+  static showGreeting() {
+    const greeting = new GreetingScreen(this);
+    greeting.fadeIn();
+    changeScreen(mainElement, greeting.element);
+  }
+
   static showRules() {
     const rules = rulesScreen(this);
     changeScreen(mainElement, rules);
@@ -53,7 +59,7 @@ export default class Application {
     changeScreen(mainElement, game.element);
   }
 
-  static fixStat(answers, lives, playerName) {
+  static saveCurrentGameResults(answers, lives, playerName) {
     Loader.saveResults({answers, lives}, playerName)
       .then(() => Loader.loadResults(playerName))
       .then((data) => Application.showStat(data, playerName))
