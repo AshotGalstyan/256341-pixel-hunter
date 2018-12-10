@@ -1,6 +1,6 @@
 import AbstractView from '../../common/abstract-view.js';
 import {statsLine} from '../../common/utilites.js';
-import {TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS, STAT_INFO, TOTAL_TITLE_FOR_FAILED} from '../../common/constants.js';
+import {MAX_LIVES, TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS, STAT_INFO, TOTAL_TITLE_FOR_FAILED} from '../../common/constants.js';
 
 const getScore = (answers, lives) => {
 
@@ -88,6 +88,11 @@ const getStatistics = (archive) => {
 
 const estimateGame = (answers) => {
   if (answers.length < TOTAL_STEPS) {
+    return `Поражение`;
+  }
+
+  const totalWrongs = answers.filter((el) => el === QUIZ_RESULTS.wrong.type || el === QUIZ_RESULTS.dead.type);
+  if (totalWrongs.length > MAX_LIVES) {
     return `Поражение`;
   }
   return `Победа!`;
