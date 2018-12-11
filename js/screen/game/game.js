@@ -123,7 +123,6 @@ export default class gameScreen {
   }
 
   updateQuest() {
-
     const livesTablo = new LivesTabloView(livesLine(this.model.getCurrentLives(), MAX_LIVES));
     if (this.allPartsReady) {
       this.header.replaceChild(livesTablo.element, this.livesTablo);
