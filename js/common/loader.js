@@ -34,15 +34,13 @@ const getAnswersByType = (type, answers) => {
 
 const convertServerData = (serverData) => {
 
-  const imagesMap = new Map();
+  const imagesMap = {};
   const screenplay = serverData.map((it) => {
     const type = it.type;
     const question = it.question;
     const size = {width: it.answers[0].image.width, height: it.answers[0].image.height};
     const images = it.answers.map((el) => {
-      if (!imagesMap.has(el.image.url)) {
-        imagesMap.set(el.image.url, {type: el.type});
-      }
+      imagesMap[el.image.url] = {type: el.type};
       return el.image.url;
     });
     const answers = getAnswersByType(it.type, it.answers);
@@ -75,16 +73,14 @@ export default class Loader {
         this.images = tmp.images;
         this.screenplay = tmp.screenplay;
 
-        return [...this.images.keys()];
+        return Object.keys(this.images);
       })
       .then((images) => images.map((it) => loadImage(it)))
       .then((imagePromises) => Promise.all(imagePromises))
       .then((images) => {
 
         images.forEach((it) => {
-          const tmp = this.images.get(it.src);
-          tmp.size = {width: it.width, height: it.height};
-          this.images.set(it.src, tmp);
+          this.images[it.src].size = {width: it.width, height: it.height};
         });
 
         return {screenplay: this.screenplay, images: this.images};

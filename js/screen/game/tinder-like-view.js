@@ -21,8 +21,8 @@ export default class TinderLike extends AbstractView {
       <section class="game">
         <p class="game__task">${this.title}</p>
         <form class="game__content  game__content--wide">
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages.get(this.images[0]).type}&nbsp;"` : ``)}>
-          ${createImage(this.images[0], `Option`, this._place, this.allImages.get(this.images[0]).size)}
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages[this.images[0]].type}&nbsp;"` : ``)}>
+          ${createImage(this.images[0], `Option`, this._place, this.allImages[this.images[0]].size)}
             <label class="game__answer  game__answer--photo">
               <input class="visually-hidden" name="question1" type="radio" value="photo">
               <span>Фото</span>

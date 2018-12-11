@@ -55,7 +55,6 @@ export default class Application {
     model.gameImages = gameData.images;
 
     const game = new GameScreen(this, model);
-
     changeScreen(mainElement, game.element);
   }
 

@@ -21,8 +21,8 @@ export default class TwoOfTwo extends AbstractView {
       <section class="game">
         <p class="game__task">${this.title}</p>
         <form class="game__content">
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages.get(this.images[0]).type}&nbsp;"` : ``)}>
-            ${createImage(this.images[0], `Option 1`, this._place, this.allImages.get(this.images[0]).size)}
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages[this.images[0]].type}&nbsp;"` : ``)}>
+            ${createImage(this.images[0], `Option 1`, this._place, this.allImages[this.images[0]].size)}
             <label class="game__answer game__answer--photo">
               <input class="visually-hidden" name="question1" type="radio" value="photo">
               <span>Фото</span>
@@ -32,8 +32,8 @@ export default class TwoOfTwo extends AbstractView {
               <span>Рисунок</span>
             </label>
           </div>
-          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages.get(this.images[1]).type}&nbsp;"` : ``)}>
-            ${createImage(this.images[1], `Option 2`, this._place, this.allImages.get(this.images[1]).size)}
+          <div class="game__option"${(DEBUG ? ` data-type="&nbsp;${this.allImages[this.images[1]].type}&nbsp;"` : ``)}>
+            ${createImage(this.images[1], `Option 2`, this._place, this.allImages[this.images[1]].size)}
             <label class="game__answer  game__answer--photo">
               <input class="visually-hidden" name="question2" type="radio" value="photo">
               <span>Фото</span>
