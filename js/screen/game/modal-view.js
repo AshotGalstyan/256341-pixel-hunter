@@ -35,8 +35,7 @@ export default class ModalView extends AbstractView {
         reject();
       });
 
-      closeButton.addEventListener(`click`, function handleCloseButtonClick(evt) {
-        evt.preventDefault();
+      closeButton.addEventListener(`click`, function handleCloseButtonClick() {
         closeButton.removeEventListener(`click`, handleCloseButtonClick);
         reject();
       });

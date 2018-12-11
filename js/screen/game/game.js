@@ -1,4 +1,3 @@
-// import GameView from './game-view.js';
 import LogoView from '../../common/logo-view.js';
 import TimeTabloView from './time-tablo-view.js';
 import LivesTabloView from './lives-tablo-view.js';
