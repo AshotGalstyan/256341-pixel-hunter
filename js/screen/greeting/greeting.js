@@ -1,13 +1,22 @@
 import GreetingView from './greeting-view.js';
 
-export default (router) => {
+export default class GreetingScreen {
 
-  const greeting = new GreetingView();
+  constructor(router) {
+    this.router = router;
+    const greeting = new GreetingView();
+    greeting.onClick = () => {
+      greeting.unbind();
+      router.showRules();
+    };
+    this.root = greeting;
+  }
 
-  greeting.onClick = () => {
-    greeting.unbind();
-    router.showRules();
-  };
+  get element() {
+    return this.root.element;
+  }
 
-  return greeting.element;
-};
+  fadeIn() {
+    this.root.fadeIn();
+  }
+}

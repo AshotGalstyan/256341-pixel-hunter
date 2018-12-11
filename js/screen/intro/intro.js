@@ -1,13 +1,16 @@
 import IntroView from './intro-view.js';
 
-export default (router) => {
+export default class IntroScreen {
 
-  const intro = new IntroView();
+  constructor() {
+    this.root = new IntroView();
+  }
 
-  intro.onClick = () => {
-    intro.unbind();
-    router.showGreeting();
-  };
+  get element() {
+    return this.root.element;
+  }
 
-  return intro.element;
-};
+  fadeOut() {
+    this.root.fadeOut();
+  }
+}

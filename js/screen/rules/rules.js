@@ -4,8 +4,8 @@ export default (router) => {
 
   const rules = new RulesView();
 
-  rules.onClick = () => {
-
+  rules.onClick = (evt) => {
+    evt.preventDefault();
     if (rules.name.value.trim() !== ``) {
       rules.unbind();
       router.showGame(rules.name.value.trim());
@@ -20,5 +20,7 @@ export default (router) => {
       rules.nextButton.disabled = true;
     }
   };
+
   return rules.element;
+
 };

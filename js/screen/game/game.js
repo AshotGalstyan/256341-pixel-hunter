@@ -1,7 +1,7 @@
-// import GameView from './game-view.js';
 import LogoView from '../../common/logo-view.js';
 import TimeTabloView from './time-tablo-view.js';
 import LivesTabloView from './lives-tablo-view.js';
+import ModalView from './modal-view.js';
 
 import Timer from '../../common/timer.js';
 
@@ -53,8 +53,8 @@ export default class gameScreen {
 
     const logo = new LogoView();
     logo.onClick = () => {
-      logo.unbind();
-      this.router.showRules();
+      this.freezeTimer();
+      this.showModal();
     };
     this.logoObject = logo;
     this.logo = logo.element;
@@ -63,6 +63,7 @@ export default class gameScreen {
     this.updateQuest();
 
     this.header = render([this.logo, this.timeTablo, this.livesTablo], `header`, {class: `header`});
+
     this.root = render([this.header, this.quest]);
 
     this.start();
@@ -70,6 +71,19 @@ export default class gameScreen {
 
   get element() {
     return this.root;
+  }
+
+  showModal() {
+    const modal = new ModalView();
+    this.root.insertBefore(modal.element, this.root.firstChild);
+    modal.dialog()
+      .then(() => {
+        this.router.showGreeting();
+      })
+      .catch(() => {
+        this.unfreezeTimer();
+        this.root.removeChild(modal.element);
+      });
   }
 
   updateHeader(newTimeTablo) {
@@ -86,8 +100,28 @@ export default class gameScreen {
     this.timeTablo = timeTablo.element;
   }
 
-  updateQuest() {
+  getTimerId() {
+    return setInterval(() => {
+      const time = this.timer.tick();
+      this.updateTimer();
+      if (time === `finished`) {
+        this.reset();
+        this.answer(QUIZ_RESULTS.dead.type);
+      }
+    }, 1000);
+  }
 
+  freezeTimer() {
+    this._freezedTime = this.timer.getTime();
+    clearInterval(this.intervalId);
+  }
+
+  unfreezeTimer() {
+    this.timer.setTime(this._freezedTime);
+    this.intervalId = this.getTimerId();
+  }
+
+  updateQuest() {
     const livesTablo = new LivesTabloView(livesLine(this.model.getCurrentLives(), MAX_LIVES));
     if (this.allPartsReady) {
       this.header.replaceChild(livesTablo.element, this.livesTablo);
@@ -110,14 +144,7 @@ export default class gameScreen {
   start() {
     this.allPartsReady = true;
     this.reset();
-    this.intervalId = setInterval(() => {
-      const time = this.timer.tick();
-      this.updateTimer();
-      if (time === `finished`) {
-        this.reset();
-        this.answer(QUIZ_RESULTS.dead.type);
-      }
-    }, 1000);
+    this.intervalId = this.getTimerId();
   }
 
   reset() {
@@ -143,7 +170,7 @@ export default class gameScreen {
         this.reset();
         this.logoObject.unbind();
         this.questObject.unbind();
-        this.router.showStat(this.model.getAnswers(), this.model.getCurrentLives());
+        this.router.saveCurrentGameResults(this.model.getAnswers(), this.model.getCurrentLives(), this.model.playerName);
       }
     }
   }

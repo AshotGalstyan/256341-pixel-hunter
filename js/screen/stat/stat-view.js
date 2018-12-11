@@ -1,7 +1,6 @@
 import AbstractView from '../../common/abstract-view.js';
 import {statsLine} from '../../common/utilites.js';
-import {TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS, STAT_INFO, TOTAL_TITLE_FOR_FAILED} from '../../common/constants.js';
-import {ARCHIVE} from '../../data/data.js';
+import {MAX_LIVES, TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS, STAT_INFO, TOTAL_TITLE_FOR_FAILED} from '../../common/constants.js';
 
 const getScore = (answers, lives) => {
 
@@ -16,12 +15,7 @@ const getScore = (answers, lives) => {
     }
   }
 
-  let total = 0;
-  for (const key in score) {
-    if (score.hasOwnProperty(key)) {
-      total += score[key] * QUIZ_RESULTS[key].points;
-    }
-  }
+  const total = Object.keys(score).reduce((sum, key) => sum + score[key] * QUIZ_RESULTS[key].points, 0);
   score.total = total + lives * LIVES_TO_POINT;
   score.lives = lives;
 
@@ -29,14 +23,23 @@ const getScore = (answers, lives) => {
 
 };
 
-const showCurrentScore = (currNumber, answers, lives) => {
+const showCurrentScore = (currNumber, answers, lives, date) => {
 
   const currentScore = getScore(answers, lives);
+
+  const gameDate = new Date(date).toLocaleDateString(`ru-RU`, {
+    day: `numeric`,
+    month: `short`,
+    year: `numeric`,
+    hour: `numeric`,
+    minute: `numeric`,
+    second: `numeric`
+  });
 
   const statBody = (answers.length < TOTAL_STEPS ?
     (`
       <tr>
-        <td class="result__number">${currNumber}</td>
+        <td class="result__number" title="${gameDate}">${currNumber}</td>
         <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
         <td class="result__points"></td>
         <td class="result__total  result__total--final">${TOTAL_TITLE_FOR_FAILED}</td>
@@ -47,7 +50,7 @@ const showCurrentScore = (currNumber, answers, lives) => {
         if (key === `correct`) {
           return `
           <tr>
-            <td class="result__number">${currNumber}.</td>
+            <td class="result__number" title="${gameDate}">${currNumber}.</td>
             <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
             <td class="result__points">× ${STAT_INFO[key].bonus}</td>
             <td class="result__total">${(currentScore[key] + currentScore[QUIZ_RESULTS.fast.type] + currentScore[QUIZ_RESULTS.slow.type]) * STAT_INFO[key].bonus}</td>
@@ -77,27 +80,32 @@ const showCurrentScore = (currNumber, answers, lives) => {
 
 };
 
-const getStatistics = (answers, lives, archive) => {
+const getStatistics = (archive) => {
 
-  let template = showCurrentScore(1, answers, lives);
+  return archive.reduce((tmp, current, index) => tmp + showCurrentScore(index + 1, current.answers, current.lives, current.date), ``);
 
-  for (let i = 0; i < archive.length; i++) {
-    template += showCurrentScore(i + 2, archive[i].answers, archive[i].lives);
+};
+
+const estimateGame = (answers) => {
+  if (answers.length < TOTAL_STEPS) {
+    return `Поражение`;
   }
 
-  return template;
-
+  const totalWrongs = answers.filter((el) => el === QUIZ_RESULTS.wrong.type || el === QUIZ_RESULTS.dead.type);
+  if (totalWrongs.length > MAX_LIVES) {
+    return `Поражение`;
+  }
+  return `Победа!`;
 };
 
 export default class StatView extends AbstractView {
 
-  constructor(answers, lives) {
+  constructor(archive) {
 
     super();
 
-    this.title = (answers.length < TOTAL_STEPS ? `Поражение` : `Победа!`);
-    this.statistics = getStatistics(answers, lives, ARCHIVE);
-    this.lives = lives;
+    this.title = estimateGame(archive[0].answers);
+    this.statistics = getStatistics(archive);
   }
 
   get wrapperTag() {

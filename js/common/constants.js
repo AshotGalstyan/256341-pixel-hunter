@@ -18,6 +18,17 @@ export const QUIZ_RESULTS = {
   dead: {type: `dead`, points: 0}
 };
 
+export const QuestionType = {
+  TWO_OF_TWO: `two-of-two`,
+  TINDER_LIKE: `tinder-like`,
+  ONE_OF_THREE: `one-of-three`
+};
+
+export const AnswerType = {
+  PAINTING: `painting`,
+  PHOTO: `photo`
+};
+
 export const STAT_INFO = {
   correct: {title: ``, bonus: QUIZ_RESULTS.correct.points},
   fast: {title: `Бонус за скорость:`, bonus: QUIZ_RESULTS.fast.points - QUIZ_RESULTS.correct.points},
@@ -26,14 +37,7 @@ export const STAT_INFO = {
   total: {title: ``}
 };
 
-export const IMAGE_TYPES = {
-  photo: `photo`,
-  paint: `paint`
-};
+export const SERVER_URL = `https://es.dump.academy/pixel-hunter/`;
+export const DEFAULT_NAME = `assa`;
+export const APP_ID = 6587322;
 
-export const LAYOUT_CLASSES = {
-  layout1: `Layout1View`,
-  layout2: `Layout2View`,
-  layout3: `Layout3View`,
-  layout4: `Layout4View`
-};
