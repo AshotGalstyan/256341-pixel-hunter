@@ -15,8 +15,8 @@ export const createImage = (src, alt, holderSize, imageSize) => {
 
 };
 
-export const statsLine = (answers, total = 0) => {
-  return answers.map((el) => `<li class="stats__result stats__result--` + el + `"></li>`).join(` `) + (total > 0 ? [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`).join(` `) : ``);
+export const getStatsLine = (answers, total = 0) => {
+  return answers.map((el) => `<li class="stats__result stats__result--${el}"></li>`).join(` `) + (total > 0 ? [...Array(total - answers.length)].map(() => `<li class="stats__result stats__result--unknown"></li>`).join(` `) : ``);
 };
 
 export const render = (inner, wrapperTag = `div`, wrapperAttributes = {}) => {

@@ -9,7 +9,7 @@ import TinderLike from './tinder-like-view.js';
 import OneOfThree from './one-of-three-view.js';
 import TwoOfTwo from './two-of-two-view.js';
 
-import {statsLine, render} from "../../common/utilites.js";
+import {getStatsLine, render} from "../../common/utilites.js";
 import {MAX_TIME_LIMIT, MAX_LIVES, TOTAL_STEPS, QUIZ_RESULTS, CRITICAL_TIME, SLOW_LIMIT, FAST_LIMIT} from '../../common/constants.js';
 
 const LayoutClasses = {};
@@ -34,9 +34,9 @@ const livesLine = (lives, total) => {
     `<img src="img/heart__full.svg" class="game__heart" alt="Life" width="31" height="27">`
   ];
 
-  const tmp = Array.from(`0`.repeat(total - lives) + `1`.repeat(lives));
+  const temporary = Array.from(`0`.repeat(total - lives) + `1`.repeat(lives));
 
-  return tmp.map((el) => template[el]).join(` `);
+  return temporary.map((el) => template[el]).join(` `);
 
 };
 
@@ -76,7 +76,7 @@ export default class gameScreen {
   showModal() {
     const modal = new ModalView();
     this.root.insertBefore(modal.element, this.root.firstChild);
-    modal.dialog()
+    modal.getUserAction()
       .then(() => {
         this.router.showGreeting();
       })
@@ -130,7 +130,7 @@ export default class gameScreen {
 
     const currentStep = this.model.screenplay[this.model.getCurrentStep()];
 
-    const quest = new LayoutClasses[currentStep.type](currentStep, this.model.gameImages, statsLine(this.model.answers, TOTAL_STEPS));
+    const quest = new LayoutClasses[currentStep.type](currentStep, this.model.gameImages, getStatsLine(this.model.answers, TOTAL_STEPS));
     this.questObject = quest;
     quest.onFinishQuest = () => {
       this.answer(this.questObject.result);

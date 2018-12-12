@@ -22,7 +22,7 @@ export default class GameModel {
     return this.answers;
   }
 
-  nextStep() {
+  goToNextStep() {
     if (this.step < TOTAL_STEPS - 1) {
       this.step += 1;
     } else {
@@ -47,7 +47,7 @@ export default class GameModel {
     if (totalWrongs.length > MAX_LIVES) {
       this.gameOver = true;
     } else {
-      this.nextStep();
+      this.goToNextStep();
     }
   }
 
