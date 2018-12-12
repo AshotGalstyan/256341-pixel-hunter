@@ -1,5 +1,5 @@
 import AbstractView from '../../common/abstract-view.js';
-import {statsLine} from '../../common/utilites.js';
+import {getStatsLine} from '../../common/utilites.js';
 import {MAX_LIVES, TOTAL_STEPS, LIVES_TO_POINT, QUIZ_RESULTS, STAT_INFO, TOTAL_TITLE_FOR_FAILED} from '../../common/constants.js';
 
 const getScore = (answers, lives) => {
@@ -40,7 +40,7 @@ const showCurrentScore = (currNumber, answers, lives, date) => {
     (`
       <tr>
         <td class="result__number" title="${gameDate}">${currNumber}</td>
-        <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
+        <td colspan="2"><ul class="stats">${getStatsLine(answers)}</ul></td>
         <td class="result__points"></td>
         <td class="result__total  result__total--final">${TOTAL_TITLE_FOR_FAILED}</td>
       </tr>
@@ -51,7 +51,7 @@ const showCurrentScore = (currNumber, answers, lives, date) => {
           return `
           <tr>
             <td class="result__number" title="${gameDate}">${currNumber}.</td>
-            <td colspan="2"><ul class="stats">${statsLine(answers)}</ul></td>
+            <td colspan="2"><ul class="stats">${getStatsLine(answers)}</ul></td>
             <td class="result__points">× ${STAT_INFO[key].bonus}</td>
             <td class="result__total">${(currentScore[key] + currentScore[QUIZ_RESULTS.fast.type] + currentScore[QUIZ_RESULTS.slow.type]) * STAT_INFO[key].bonus}</td>
           </tr>
@@ -82,7 +82,7 @@ const showCurrentScore = (currNumber, answers, lives, date) => {
 
 const getStatistics = (archive) => {
 
-  return archive.reduce((tmp, current, index) => tmp + showCurrentScore(index + 1, current.answers, current.lives, current.date), ``);
+  return archive.reduce((temporary, current, index) => temporary + showCurrentScore(index + 1, current.answers, current.lives, current.date), ``);
 
 };
 

@@ -16,9 +16,11 @@ const changeScreen = (wrapper, ...elements) => {
   }
 };
 
-let gameData;
-
 export default class Application {
+
+  constructor() {
+    this.gameData = {};
+  }
 
   static start() {
     const intro = new IntroScreen();
@@ -27,7 +29,7 @@ export default class Application {
 
     Loader.loadData()
       .then((data) => {
-        gameData = data;
+        this.gameData = data;
       })
       .then(() => Application.hideIntro(intro, greeting))
       .catch((err) => Application.showError(err));
@@ -51,8 +53,8 @@ export default class Application {
 
   static showGame(playerName) {
     const model = new GameModel(playerName);
-    model.screenplay = gameData.screenplay;
-    model.gameImages = gameData.images;
+    model.screenplay = this.gameData.screenplay;
+    model.gameImages = this.gameData.images;
 
     const game = new GameScreen(this, model);
     changeScreen(mainElement, game.element);

@@ -23,7 +23,7 @@ export default class ModalView extends AbstractView {
     `;
   }
 
-  dialog() {
+  getUserAction() {
     return new Promise((resolve, reject) => {
       const yesButton = this.element.querySelector(`.modal__btn--yes`);
       const noButton = this.element.querySelector(`.modal__btn--no`);

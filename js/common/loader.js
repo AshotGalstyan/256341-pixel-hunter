@@ -7,7 +7,7 @@ const checkStatus = (response) => {
   throw new Error(`Произошла ошибка (код - ${response.status})`);
 };
 
-const toJSON = (res) => res.json();
+const convertToJSON = (res) => res.json();
 
 const sortResults = (archive) => archive.sort((el1, el2) => el2.date - el1.date);
 
@@ -68,10 +68,10 @@ export default class Loader {
       .then((response) => response.json())
       .then((data) => {
 
-        const tmp = convertServerData(data);
+        const temporary = convertServerData(data);
 
-        this.images = tmp.images;
-        this.screenplay = tmp.screenplay;
+        this.images = temporary.images;
+        this.screenplay = temporary.screenplay;
 
         return Object.keys(this.images);
       })
@@ -88,7 +88,7 @@ export default class Loader {
   }
 
   static loadResults(name = DEFAULT_NAME) {
-    return fetch(`${SERVER_URL}/stats/${APP_ID}-${name}`).then(checkStatus).then(toJSON).then(sortResults);
+    return fetch(`${SERVER_URL}/stats/${APP_ID}-${name}`).then(checkStatus).then(convertToJSON).then(sortResults);
   }
 
   static saveResults(data, name = DEFAULT_NAME) {
