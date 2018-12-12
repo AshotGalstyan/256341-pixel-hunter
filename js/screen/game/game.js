@@ -21,10 +21,14 @@ const rankingAnswer = (answer, time) => {
 
   if (time > FAST_LIMIT && answer === QUIZ_RESULTS.correct.type) {
     return QUIZ_RESULTS.fast.type;
-  } else if (time < SLOW_LIMIT && answer === QUIZ_RESULTS.correct.type) {
+  }
+
+  if (time < SLOW_LIMIT && answer === QUIZ_RESULTS.correct.type) {
     return QUIZ_RESULTS.slow.type;
   }
+
   return answer;
+
 };
 
 const livesLine = (lives, total) => {

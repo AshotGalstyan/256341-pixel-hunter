@@ -47,6 +47,7 @@ const showCurrentScore = (currNumber, answers, lives, date) => {
       `) :
     (
       Object.keys(STAT_INFO).map((key) => {
+
         if (key === `correct`) {
           return `
           <tr>
@@ -56,7 +57,9 @@ const showCurrentScore = (currNumber, answers, lives, date) => {
             <td class="result__total">${(currentScore[key] + currentScore[QUIZ_RESULTS.fast.type] + currentScore[QUIZ_RESULTS.slow.type]) * STAT_INFO[key].bonus}</td>
           </tr>
           `;
-        } else if (key !== `total`) {
+        }
+
+        if (key !== `total`) {
           return (currentScore[key] > 0 ?
             `
             <tr>
@@ -69,9 +72,11 @@ const showCurrentScore = (currNumber, answers, lives, date) => {
             ` : ``
           );
         }
+
         return `
           <tr><td colspan="5" class="result__total  result__total--final">${currentScore[key]}</td></tr>
           `;
+
       }).join(``)
     )
   );
